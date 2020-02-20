@@ -15,3 +15,6 @@ class Piece():
         self.col = col
         self.color = color
 
+    def __repr__ (self):
+        return 'Piece (x: ' + str(self.row) + ' | y: ' + str(self.col) + ' | color: ' + str(self.color)[7:]
+

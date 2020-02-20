@@ -25,7 +25,7 @@ class Board():
         self.num_rows = 8
         self.num_cols = 8
 
-        self._grid = []
+        self._grid = [] #Here "grid" is a list which stores all of the active pieces.
         
         #For loop to initialize grid
         for y in range(0,8):
@@ -45,6 +45,24 @@ class Board():
                         self._grid.append(Piece(x, y, Player.white))
 
                 
+    def __repr__(self):
+        out = ''
         
-        
+        for y in range(0,8):
+            for x in range(0,8):
+
+                if (x+y)%2 == 0:
+                    addchr = '1'
+                else:
+                    addchr = '0'
+                
+                for p in self._grid:
+                    if p.row == x and p.col == y and p.color == Player.white:
+                        addchr = 'b'
+                    elif p.row == x and p.col == y and p.color == Player.black:
+                        addchr = 'w'
+                out += addchr    
+                
+            out += '\n'
+        return out
 
