@@ -58,9 +58,9 @@ class Board():
                 
                 for p in self._grid:
                     if p.row == x and p.col == y and p.color == Player.white:
-                        addchr = 'b'
-                    elif p.row == x and p.col == y and p.color == Player.black:
                         addchr = 'w'
+                    elif p.row == x and p.col == y and p.color == Player.black:
+                        addchr = 'b'
                 out += addchr    
                 
             out += '\n'
