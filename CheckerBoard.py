@@ -62,15 +62,15 @@ class Board():
             for x in range(0,8):
 
                 if (x+y)%2 == 0:
-                    addchr = '1'
+                    addchr = ' '
                 else:
-                    addchr = '0'
+                    addchr = '█'
                 
                 for p in self._grid:
                     if p.row == x and p.col == y and p.color == Player.white:
-                        addchr = 'b'
+                        addchr = '●'
                     elif p.row == x and p.col == y and p.color == Player.black:
-                        addchr = 'w'
+                        addchr = '○'
                 out += addchr    
                 
             out += '\n'
