@@ -10,11 +10,14 @@ class Player(enum.Enum):
         return Player.black if self == Player.white else Player.white
 
 class Piece():
-    def __init__ (self, row, col, color):
-        self.row = row
-        self.col = col
+    def __init__ (self, x, y, color):
+        self.x = x
+        self.y = y
         self.color = color
+        self.isKing = False
 
     def __repr__ (self):
-        return 'Piece (x: ' + str(self.row) + ' | y: ' + str(self.col) + ' | color: ' + str(self.color)[7:]
+        return 'Piece (x: ' + str(self.x) + ' | y: ' + str(self.y) + ' | color: ' + str(self.color)[7:] + ' | king: ' + str(self.isKing) + ')'
 
+    def makeKing(self):
+        self.isKing = True

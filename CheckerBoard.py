@@ -1,4 +1,5 @@
 from CheckerTypes import *
+from Helper import *
 
 class Move():  # <1>
     def __init__(self, point=None, is_pass=False, is_resign=False):
@@ -22,8 +23,8 @@ class Move():  # <1>
 
 class Board():
     def __init__(self):
-        self.num_rows = 8
-        self.num_cols = 8
+        self.width = 8
+        self.height = 8
 
         self._grid = [] #Here "grid" is a list which stores all of the active pieces.
         
@@ -44,16 +45,46 @@ class Board():
                     if x % 2 == 0:
                         self._grid.append(Piece(x, y, Player.white))
 
-    def movePiece(piece, row, col):
-        assert self.is_on_grid(row, col)
-        assert self.getPieceIdAt(row, col) is None
-        self._grid.index(piece)
+    def movePieceTo(self, piece, x, y):
+        assert self.is_on_grid(x, y)
+        assert self.getPieceAt(x, y) is None # make sure the space is empty
+        dx = x - piece.x
+        dy = y - piece.y
+        assert abs(dx) == abs(dy) # make sure it is diagonal
+        # if make sure it is forward (black = down(+), white = up(-)) for non kings
+        if not piece.isKing:
+            if piece.color is Player.black:
+                assert sign(dy) == 1
+            elif piece.color is Player.white:
+                assert sign(dy) == -1
+        assert abs(dy) <= 2 # make sure it is single or jump
+        # if it is a jump, make sure there is an enemy piece in the middle
+        if abs(dy) == 2:
+            middleX = piece.x + sign(dx)
+            middleY = piece.y + sign(dy)
+            middlePiece = self.getPieceAt(middleX, middleY)
+            assert middlePiece is not None
+            assert piece.color is not middlePiece.color
+            # remove the piece in the middle
+            self._grid.remove(middlePiece)
+        # move the piece
+        piece.x = x
+        piece.y = y
+        # make it a king if needed (black = y 7, white = y 0)
+        if not piece.isKing:
+            if piece.color is Player.black and piece.y == 7:
+                piece.makeKing()
+            if piece.color is Player.white and piece.y == 0:
+                piece.makeKing()
 
-    def getPieceIdAt(row, col):
-        for i, piece in enumerate(self._grid):
-            if piece.row = row and piece.col = col:
-                return i
+    def getPieceAt(self, x, y):
+        for piece in self._grid:
+            if piece.x == x and piece.y == y:
+                return piece
         return None
+
+    def is_on_grid(self, x, y):
+        return x >= 0 and x <= self.width and y >= 0 and y <= self.height
 
     def __repr__(self):
         out = ''
@@ -67,9 +98,9 @@ class Board():
                     addchr = '█'
                 
                 for p in self._grid:
-                    if p.row == x and p.col == y and p.color == Player.white:
+                    if p.x == x and p.y == y and p.color == Player.white:
                         addchr = '●'
-                    elif p.row == x and p.col == y and p.color == Player.black:
+                    elif p.x == x and p.y == y and p.color == Player.black:
                         addchr = '○'
                 out += addchr    
                 
@@ -147,9 +178,9 @@ class GameState:
 
     def legal_moves(self):
         moves = []
-        for row in range(1, self.board.num_rows + 1):
-            for col in range(1, self.board.num_cols + 1):
-                move = Move.play(Point(row, col))
+        for x in range(1, self.board.width + 1):
+            for y in range(1, self.board.height + 1):
+                move = Move.play(Point(x, y))
                 if self.is_valid_move(move):
                     moves.append(move)
         # These two moves are always legal.
@@ -165,5 +196,3 @@ class GameState:
             return self.next_player
         game_result = compute_game_result(self)
         return game_result.winner
-
-
