@@ -1,5 +1,6 @@
 from CheckerTypes import *
-from Helper import *
+import numpy as np
+#from Helper import *
 
 class Move():  # <1>
     def __init__(self, point=None, is_pass=False, is_resign=False):
@@ -54,14 +55,14 @@ class Board():
         # if make sure it is forward (black = down(+), white = up(-)) for non kings
         if not piece.isKing:
             if piece.color is Player.black:
-                assert sign(dy) == 1
+                assert np.sign(dy) == 1
             elif piece.color is Player.white:
-                assert sign(dy) == -1
+                assert np.sign(dy) == -1
         assert abs(dy) <= 2 # make sure it is single or jump
         # if it is a jump, make sure there is an enemy piece in the middle
         if abs(dy) == 2:
-            middleX = piece.x + sign(dx)
-            middleY = piece.y + sign(dy)
+            middleX = piece.x + np.sign(dx)
+            middleY = piece.y + np.sign(dy)
             middlePiece = self.getPieceAt(middleX, middleY)
             assert middlePiece is not None
             assert piece.color is not middlePiece.color
@@ -89,19 +90,28 @@ class Board():
     def __repr__(self):
         out = ''
         
+        print('   0  1  2  3  4  5  6  7 ')
+        
         for y in range(0,8):
+            out += str(y) + ' '
             for x in range(0,8):
-
+                
                 if (x+y)%2 == 0:
-                    addchr = ' '
+                    addchr = '   '
                 else:
-                    addchr = '█'
+                    addchr = '███'
                 
                 for p in self._grid:
                     if p.x == x and p.y == y and p.color == Player.white:
-                        addchr = '●'
+                        if p.isKing:
+                            addchr = ' ■ '
+                        else:
+                            addchr = ' ● '
                     elif p.x == x and p.y == y and p.color == Player.black:
-                        addchr = '○'
+                        if p.isKing:
+                            addchr = ' □ '
+                        else:
+                            addchr = ' ○ '
                 out += addchr    
                 
             out += '\n'
