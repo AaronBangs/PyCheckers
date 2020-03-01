@@ -23,7 +23,7 @@ class Move():  # <1>
         return Move(is_resign=True)
 
 class Board():
-    def __init__(self):
+    def __init__(self): #by Aaron
         self.width = 8
         self.height = 8
 
@@ -32,7 +32,7 @@ class Board():
         #For loop to initialize grid
         for y in range(0,8):
             for x in range(0,8):
-                if y == 0 or  y == 2:
+                if y == 0 or  y == 2: #The coordinates here are to ensure a checker-board pattern
                     if x % 2 == 0:
                         self._grid.append(Piece(x, y, Player.black))
                 if y == 1:
@@ -73,9 +73,7 @@ class Board():
         piece.y = y
         # make it a king if needed (black = y 7, white = y 0)
         if not piece.isKing:
-            if piece.color is Player.black and piece.y == 7:
-                piece.makeKing()
-            if piece.color is Player.white and piece.y == 0:
+            if (piece.color is Player.black and piece.y == 7) or (piece.color is Player.white and piece.y == 0):
                 piece.makeKing()
 
     def getPieceAt(self, x, y):
@@ -87,36 +85,113 @@ class Board():
     def is_on_grid(self, x, y):
         return x >= 0 and x <= self.width and y >= 0 and y <= self.height
 
-    def __repr__(self):
+    
+    def pieceCanJump(self, piece): #by Aaron
+        
+        p1p1 = self.getPieceAt(piece.x+1,piece.y+1) 
+        p1m1 = self.getPieceAt(piece.x+1,piece.y-1)
+        m1p1 = self.getPieceAt(piece.x-1,piece.y+1)
+        m1m1 = self.getPieceAt(piece.x-1,piece.y+1)
+
+        p2p2 = self.getPieceAt(piece.x+2,piece.y+2) 
+        p2m2 = self.getPieceAt(piece.x+2,piece.y-2)
+        m2p2 = self.getPieceAt(piece.x-2,piece.y+2)
+        m2m2 = self.getPieceAt(piece.x-2,piece.y+2)
+        
+        """
+        Defines the pieces at these positions, if they exist
+            m2m2████    ████p2m2
+            ████m1m1████p1m1████
+                ████piec████
+            ████m1p1████p1p1████
+            m2p2████    ████p2p2
+        """
+        
+
+
+        
+        if piece.isKing:
+            if (p2p2 == None and p1p1 != None and p1p1.color != piece.color)\
+                or (p2m2 == None and p1m1 != None and p1m1.color != piece.color)\
+                or (m2m2 == None and m1m1 != None and m1m1.color != piece.color)\
+                or (m1p1 == None and m1p1 != None and m1p1.color != piece.color):
+                return True
+            '''
+            Makes sure at least one of the jump-to spaces is available with a piece of the opposite color in between the current piece and it.
+
+             x ███   ███ x  
+            ███ ○ ███ ○ ███
+               ███ ■ ███
+            ███ ○ ███ ○ ███
+             x ███   ███ x
+
+            One of the 4 jumps marked by the x must be possible to return True
+            '''
+                    
+        else: #If the piece is not a king
+            if piece.color == Player.white:
+                if (p2p2 == None and p1p1 != None and p1p1.color != piece.color)\
+                    or (p2m2 == None and p1m1 != None and p1m1.color != piece.color):
+                    return True
+            """
+             x ███   ███ x  
+            ███ ○ ███ ○ ███
+               ███ ● ███
+
+            only looking for these here
+            """
+
+
+            
+            if piece.color == Player.black:
+                if (m2m2 == None and m1m1 != None and m1m1.color != piece.color)\
+                    or (m1p1 == None and m1p1 != None and m1p1.color != piece.color):
+                    return True
+
+
+            """
+               ███ ○ ███
+            ███ ● ███ ● ███
+             x ███   ███ x
+
+            only looking for these here
+            """
+
+        return False #Only if all the tests above fail
+
+    def __str__(self): #by Aaron
         out = ''
         
-        print('   0  1  2  3  4  5  6  7 ')
+        print('   0  1  2  3  4  5  6  7 ') #Print the numbers to indicate x positions
         
         for y in range(0,8):
-            out += str(y) + ' '
+            
+            out += str(y) + ' ' #Print the numbers to indicate y positions, and a space to make it legible
+            
             for x in range(0,8):
                 
                 if (x+y)%2 == 0:
-                    addchr = '   '
+                    addchr = '   ' #Add black squares to the appropriate places (this is meant for dark mode) 
                 else:
-                    addchr = '███'
+                    addchr = '███' #Add white squares to the appropriate places
                 
-                for p in self._grid:
-                    if p.x == x and p.y == y and p.color == Player.white:
-                        if p.isKing:
-                            addchr = ' ■ '
-                        else:
-                            addchr = ' ● '
-                    elif p.x == x and p.y == y and p.color == Player.black:
-                        if p.isKing:
-                            addchr = ' □ '
-                        else:
-                            addchr = ' ○ '
-                out += addchr    
+                for p in self._grid: #Loops through each piece in the grid every time... there may be a more efficient way of doing this
+                    if p.x == x and p.y == y: #If the x and y of the piece matches the x and y being appended to the output string
+                        if p.color == Player.white: #If it is white
+                            if p.isKing:
+                                addchr = ' ■ ' #A piece appears as square if it is a king
+                            else:
+                                addchr = ' ● '
+                        elif p.color == Player.black: #If it is black
+                            if p.isKing:
+                                addchr = ' □ '
+                            else:
+                                addchr = ' ○ '
+                out += addchr #Add the desired character to the grid
                 
             out += '\n'
         return out
-
+'''
 class GameState:
     def __init__(self, board, next_player, previous, move):
         self.board = board
@@ -206,3 +281,4 @@ class GameState:
             return self.next_player
         game_result = compute_game_result(self)
         return game_result.winner
+'''
