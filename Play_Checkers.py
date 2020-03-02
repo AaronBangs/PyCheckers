@@ -13,11 +13,48 @@ switchPlayer:
 
 
 
-def takeTurn(board,currentPlayer,from_x,from_y,to_x,to_y):
-    p = board.getPieceAt(from_x,from_y)
-    assert p is not None
-    assert p.color == currentPlayer
-    board.movePieceTo(p,to_x,to_y)
+def takeTurn(board,currentPlayer):
+    piece = None
+    while piece == None:
+        from_x = int(input("from x: "))
+        from_y = int(input("from y: "))
+        piece = board.getPieceAt(from_x, from_y)
+
+        if piece == None:
+            print("There is no piece there\n")
+
+    to_x = int(input("to x: "))
+    to_y = int(input("to y: "))
+
+    # p = board.getPieceAt(from_x,from_y)
+    assert piece is not None
+    assert piece.color == currentPlayer
+    moveIsJump = board.moveIsJump(piece, to_x, to_y)
+    board.movePieceTo(piece,to_x,to_y)
+
+    if moveIsJump and board.pieceCanJump(piece):
+        takeDoubleJump(board, currentPlayer, piece)
+
+def takeDoubleJump(board, currentPlayer, piece):
+    doubleJumping = True
+    while doubleJumping:
+        # ask if they want to double jump
+        answer = input("Would you like to double jump (y/n):\n")
+        if answer != 'y':
+            break
+        # do the double jump
+        try:
+            to_x = int(input("\nto x:\n"))
+            to_y = int(input("\nto y:\n"))
+
+            assert(board.moveIsJump(piece, to_x, to_y))
+        except:
+            print("invalid double jump")
+            continue
+
+        board.movePieceTo(piece, to_x, to_y)
+        if board.pieceCanJump(piece):
+            takeDoubleJump(board, currentPlayer, piece)
 
 def __main__():
 
@@ -28,17 +65,18 @@ def __main__():
     currentPlayer = Player.black
     
     while True:
-        fx = int(input("\nfrom x:\n"))
-        fy = int(input("\nfrom y:\n"))
-        tx = int(input("\nto x:\n"))
-        ty = int(input("\nto y:\n"))
+        
         try:
-            takeTurn(board, currentPlayer, fx, fy, tx, ty)
+            takeTurn(board, currentPlayer)
         except:
             print("\nInvalid move. Try again.\n")
             continue
         print(board)
         currentPlayer = currentPlayer.other
+        if currentPlayer == Player.black:
+            print("Black's turn!")
+        else:
+            print("White's turn!")
 
 __main__()
     

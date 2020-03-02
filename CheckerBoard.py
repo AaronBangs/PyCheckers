@@ -85,6 +85,18 @@ class Board():
     def is_on_grid(self, x, y):
         return x >= 0 and x <= self.width and y >= 0 and y <= self.height
 
+    def moveIsJump(self, piece, x, y):
+        dx = x - piece.x
+        dy = y - piece.y
+        if abs(dy) == 2:
+            middleX = piece.x + np.sign(dx)
+            middleY = piece.y + np.sign(dy)
+            middlePiece = self.getPieceAt(middleX, middleY)
+            if middlePiece is not None and piece.color is not middlePiece.color:
+
+                return True
+        return False
+
     
     def pieceCanJump(self, piece): #by Aaron
         
@@ -130,8 +142,8 @@ class Board():
                     
         else: #If the piece is not a king
             if piece.color == Player.white:
-                if (p2p2 == None and p1p1 != None and p1p1.color != piece.color)\
-                    or (p2m2 == None and p1m1 != None and p1m1.color != piece.color):
+                if (m2m2 == None and m1m1 != None and m1m1.color != piece.color)\
+                    or (m1p1 == None and m1p1 != None and m1p1.color != piece.color):
                     return True
             """
              x ███   ███ x  
@@ -144,8 +156,8 @@ class Board():
 
             
             if piece.color == Player.black:
-                if (m2m2 == None and m1m1 != None and m1m1.color != piece.color)\
-                    or (m1p1 == None and m1p1 != None and m1p1.color != piece.color):
+                if (p2p2 == None and p1p1 != None and p1p1.color != piece.color)\
+                    or (p2m2 == None and p1m1 != None and p1m1.color != piece.color):
                     return True
 
 
