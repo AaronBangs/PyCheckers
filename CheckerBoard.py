@@ -2,7 +2,7 @@ from CheckerTypes import *
 import numpy as np
 #from Helper import *
 
-class Move():
+'''class Move():
     def __init__(self, point=None, is_pass=False, is_resign=False):
         assert (point is not None) ^ is_pass ^ is_resign
         self.point = point
@@ -20,7 +20,7 @@ class Move():
 
     @classmethod
     def resign(cls):
-        return Move(is_resign=True)
+        return Move(is_resign=True)'''
 
 class Board():
     def __init__(self): #by Aaron
@@ -46,49 +46,28 @@ class Board():
                     if x % 2 == 0:
                         self._grid.append(Piece(x, y, Player.white))
 
-    def movePieceTo(self, piece, x, y):
-        assert self.is_on_grid(x, y)
-        assert self.getPieceAt(x, y) is None # make sure the space is empty
+    def moveIsValid(self, piece, x, y):
+        if not self.is_on_grid(x, y): return False
+        if not (self.getPieceAt(x, y) is None): return False # make sure the space is empty
         dx = x - piece.x
         dy = y - piece.y
-        assert abs(dx) == abs(dy) # make sure it is diagonal
+        if not (abs(dx) == abs(dy)): return False # make sure it is diagonal
         # if make sure it is forward (black = down(+), white = up(-)) for non kings
         if not piece.isKing:
             if piece.color is Player.black:
-                assert np.sign(dy) == 1
+                if not (np.sign(dy) == 1): return False
             elif piece.color is Player.white:
-                assert np.sign(dy) == -1
-        assert abs(dy) <= 2 # make sure it is single or jump
-        # if it is a jump, make sure there is an enemy piece in the middle
+                if not (np.sign(dy) == -1): return False
+        if not (abs(dy) <= 2): return False # make sure it is single or jump
         if abs(dy) == 2:
-            middleX = piece.x + np.sign(dx)
-            middleY = piece.y + np.sign(dy)
-            middlePiece = self.getPieceAt(middleX, middleY)
-            assert middlePiece is not None
-            assert piece.color is not middlePiece.color
-            # remove the piece in the middle
-            self._grid.remove(middlePiece)
-        # move the piece
-        piece.x = x
-        piece.y = y
-        # make it a king if needed (black = y 7, white = y 0)
-        if not piece.isKing:
-            if (piece.color is Player.black and piece.y == 7) or (piece.color is Player.white and piece.y == 0):
-                piece.makeKing()
-
-    def getPieceAt(self, x, y):
-        for piece in self._grid:
-            if piece.x == x and piece.y == y:
-                return piece
-        return None
-
-    def is_on_grid(self, x, y):
-        return x >= 0 and x <= self.width and y >= 0 and y <= self.height
-
+            if not self.moveIsJump(piece, x, y): return False
+        return True
+        
+            
     def moveIsJump(self, piece, x, y):
         dx = x - piece.x
         dy = y - piece.y
-        if abs(dy) == 2:
+        if abs(dy) == 2 and self.is_on_grid(x + dx, y + dy):
             middleX = piece.x + np.sign(dx)
             middleY = piece.y + np.sign(dy)
             middlePiece = self.getPieceAt(middleX, middleY)
@@ -96,38 +75,50 @@ class Board():
 
                 return True
         return False
+           
 
+    def movePieceTo(self, piece, x, y):
+        assert self.moveIsValid(piece, x, y)
+        # move the piece
+        piece.x = x
+        piece.y = y
+        dx = x - piece.x
+        dy = y - piece.y
+        # if it is a jump, make sure there is an enemy piece in the middle
+        if self.moveIsJump(piece, x, y):
+            middleX = piece.x + np.sign(dx)
+            middleY = piece.y + np.sign(dy)
+            middlePiece = self.getPieceAt(middleX, middleY)
+            self._grid.remove(middlePiece)
+        # make it a king if needed (black = y 7, white = y 0)
+        if not piece.isKing:
+            if (piece.color is Player.black and piece.y == 7) or (piece.color is Player.white and piece.y == 0):
+                piece.makeKing()
+
+    def getPieceAt(self, x, y):
+        if not self.is_on_grid(x,y):
+            raise IndexError
+        for piece in self._grid:
+            if piece.x == x and piece.y == y:
+                return piece
+        return None
+
+    def is_on_grid(self, x, y):
+        return x >= 0 and x <= self.width and y >= 0 and y <= self.height
     
     def pieceCanJump(self, piece): #by Aaron
-        
-        p1p1 = self.getPieceAt(piece.x+1,piece.y+1) 
-        p1m1 = self.getPieceAt(piece.x+1,piece.y-1)
-        m1p1 = self.getPieceAt(piece.x-1,piece.y+1)
-        m1m1 = self.getPieceAt(piece.x-1,piece.y-1)
 
-        p2p2 = self.getPieceAt(piece.x+2,piece.y+2) 
-        p2m2 = self.getPieceAt(piece.x+2,piece.y-2)
-        m2p2 = self.getPieceAt(piece.x-2,piece.y+2)
-        m2m2 = self.getPieceAt(piece.x-2,piece.y-2)
-        
-        """
-        Defines the pieces at these positions, if they exist
-            m2m2████    ████p2m2
-            ████m1m1████p1m1████
-                ████piec████
-            ████m1p1████p1p1████
-            m2p2████    ████p2p2
-        """
+        downRight = self.moveIsJump(piece, piece.x+2, piece.y+2)
+        upRight = self.moveIsJump(piece, piece.x+2, piece.y-2)
+        downLeft = self.moveIsJump(piece, piece.x-2, piece.y+2)
+        upLeft = self.moveIsJump(piece, piece.x-2, piece.y-2)
         
 
 
         
         if piece.isKing:
-            if (p2p2 == None and p1p1 != None and p1p1.color != piece.color)\
-                or (p2m2 == None and p1m1 != None and p1m1.color != piece.color)\
-                or (m2m2 == None and m1m1 != None and m1m1.color != piece.color)\
-                or (m1p1 == None and m1p1 != None and m1p1.color != piece.color):
-                return True
+            return downRight or upRight or downLeft or upLeft
+
             '''
             Makes sure at least one of the jump-to spaces is available with a piece of the opposite color in between the current piece and it.
 
@@ -139,12 +130,10 @@ class Board():
 
             One of the 4 jumps marked by the x must be possible to return True
             '''
-                    
-        else: #If the piece is not a king
-            if piece.color == Player.white:
-                if (m2m2 == None and m1m1 != None and m1m1.color != piece.color)\
-                    or (p2m2 == None and p1m1 != None and p1m1.color != piece.color):
-                    return True
+
+        elif piece.color == Player.white:
+            return upRight or upLeft
+
             """
              x ███   ███ x  
             ███ ○ ███ ○ ███
@@ -153,13 +142,8 @@ class Board():
             only looking for these here
             """
 
-
-            
-            if piece.color == Player.black:
-                if (p2p2 == None and p1p1 != None and p1p1.color != piece.color)\
-                    or (m2p2 == None and m1p1 != None and m1p1.color != piece.color):
-                    return True
-
+        elif piece.color == Player.black:
+            return downLeft or downRight
 
             """
                ███ ○ ███
@@ -168,8 +152,7 @@ class Board():
 
             only looking for these here
             """
-
-        return False #Only if all the tests above fail
+        #return False
 
     def __str__(self): #by Aaron
         out = ''

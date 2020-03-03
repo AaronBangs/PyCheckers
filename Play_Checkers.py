@@ -29,10 +29,10 @@ def takeTurn(board,currentPlayer):
     # p = board.getPieceAt(from_x,from_y)
     assert piece is not None
     assert piece.color == currentPlayer
-    moveIsJump = board.moveIsJump(piece, to_x, to_y)
+    isJump = board.moveIsJump(piece, to_x, to_y)
     board.movePieceTo(piece,to_x,to_y)
 
-    if moveIsJump and board.pieceCanJump(piece):
+    if isJump and board.pieceCanJump(piece):
         takeDoubleJump(board, currentPlayer, piece)
 
 def takeDoubleJump(board, currentPlayer, piece):
@@ -48,7 +48,7 @@ def takeDoubleJump(board, currentPlayer, piece):
             to_y = int(input("\nto y:\n"))
 
             assert(board.moveIsJump(piece, to_x, to_y))
-        except:
+        except AssertionError:
             print("invalid double jump")
             continue
 
@@ -68,7 +68,7 @@ def __main__():
         
         try:
             takeTurn(board, currentPlayer)
-        except:
+        except AssertionError:
             print("\nInvalid move. Try again.\n")
             continue
         print(board)
