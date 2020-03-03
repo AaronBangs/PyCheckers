@@ -2,7 +2,7 @@ from CheckerTypes import *
 import numpy as np
 #from Helper import *
 
-class Move():  # <1>
+class Move():
     def __init__(self, point=None, is_pass=False, is_resign=False):
         assert (point is not None) ^ is_pass ^ is_resign
         self.point = point
@@ -103,12 +103,12 @@ class Board():
         p1p1 = self.getPieceAt(piece.x+1,piece.y+1) 
         p1m1 = self.getPieceAt(piece.x+1,piece.y-1)
         m1p1 = self.getPieceAt(piece.x-1,piece.y+1)
-        m1m1 = self.getPieceAt(piece.x-1,piece.y+1)
+        m1m1 = self.getPieceAt(piece.x-1,piece.y-1)
 
         p2p2 = self.getPieceAt(piece.x+2,piece.y+2) 
         p2m2 = self.getPieceAt(piece.x+2,piece.y-2)
         m2p2 = self.getPieceAt(piece.x-2,piece.y+2)
-        m2m2 = self.getPieceAt(piece.x-2,piece.y+2)
+        m2m2 = self.getPieceAt(piece.x-2,piece.y-2)
         
         """
         Defines the pieces at these positions, if they exist
@@ -143,7 +143,7 @@ class Board():
         else: #If the piece is not a king
             if piece.color == Player.white:
                 if (m2m2 == None and m1m1 != None and m1m1.color != piece.color)\
-                    or (m1p1 == None and m1p1 != None and m1p1.color != piece.color):
+                    or (p2m2 == None and p1m1 != None and p1m1.color != piece.color):
                     return True
             """
              x ███   ███ x  
@@ -157,7 +157,7 @@ class Board():
             
             if piece.color == Player.black:
                 if (p2p2 == None and p1p1 != None and p1p1.color != piece.color)\
-                    or (p2m2 == None and p1m1 != None and p1m1.color != piece.color):
+                    or (m2p2 == None and m1p1 != None and m1p1.color != piece.color):
                     return True
 
 
