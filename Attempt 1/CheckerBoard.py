@@ -30,8 +30,14 @@ class Board():
         self._grid = [] #Here "grid" is a list which stores all of the active pieces.
         
         #For loop to initialize grid
-        for y in range(0,8):
-            for x in range(0,8):
+        for y in range(0, self.height):
+            for x in range(0, self.width):
+                if (x + y)%2 == 0:
+                    if y < 3:
+                        self._grid.append(Piece(x, y, Player.black))
+                    elif y > 4:
+                        self._grid.append(Piece(x, y, Player.white))
+                '''
                 if y == 0 or  y == 2: #The coordinates here are to ensure a checker-board pattern
                     if x % 2 == 0:
                         self._grid.append(Piece(x, y, Player.black))
@@ -45,6 +51,7 @@ class Board():
                 if y == 6:
                     if x % 2 == 0:
                         self._grid.append(Piece(x, y, Player.white))
+                '''
 
     def moveIsValid(self, piece, x, y):
         if not self.is_on_grid(x, y): return False
