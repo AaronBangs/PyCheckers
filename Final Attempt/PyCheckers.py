@@ -132,6 +132,30 @@ class Board():
             print("(%i, %i) is outside Board." % (x, y))
             return False
         return True
+    
+    def getPossibleMove(self, piece): #by Gerard
+        
+        moveDictionary = {
+            "upLeftJump"      : Move(piece, piece.x - 2, piece.y - 2),
+            "upRightJump"     : Move(piece, piece.x + 2, piece.y - 2),
+            "downLeftJump"   : Move(piece, piece.x - 2, piece.y + 2),
+            "downRightJump"   : Move(piece, piece.x + 2, piece.y + 2),
+        
+            "upLeft"      : Move(piece, piece.x - 1, piece.y - 1),
+            "upRight"     : Move(piece, piece.x + 1, piece.y - 1),
+            "downLeft"    : Move(piece, piece.x - 1, piece.y + 1),
+            "downRight"   : Move(piece, piece.x + 1, piece.y + 1)
+ 
+            }
+
+         for move in moveDictionary:
+             if not moveDictionary[move].isValid():
+                 del moveDictionary[move]
+        return moveDictionary.values()
+                 
+        
+        
+      
 
     def pieceCanJump(self, piece):
         upLeft      = Move(piece, piece.x - 2, piece.y - 2).isValid(self)
