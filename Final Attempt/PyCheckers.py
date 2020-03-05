@@ -1,6 +1,7 @@
 #JMJ
 #PyCheckers.py
 #Contains everything you need for a basic game of checkers.
+#Programmed mostly by Aaron Bangs with a little help from Ben Campbell
 
 import enum
 import numpy
@@ -112,7 +113,7 @@ class Board():
         try:
             self.grid.remove(piece)
         except:
-            print("Could not remove piece " + str(piece))
+            print("Could not remove piece: " + str(piece))
             pass
 
     def getPieceAt(self, x, y): #by Ben
@@ -128,9 +129,33 @@ class Board():
 
     def withinBounds(self, x, y): #by Aaron
         if x < 0 or x > (self.WIDTH - 1) or y < 0 or y > (self.HEIGHT - 1):
-            print("(%i, %i) Outside Board." % (x, y))
+            print("(%i, %i) is outside Board." % (x, y))
             return False
         return True
+
+    def pieceCanJump(self, piece):
+        upLeft      = Move(piece, piece.x - 2, piece.y - 2).isValid(self)
+        upRight     = Move(piece, piece.x + 2, piece.y - 2).isValid(self)
+        downLeft    = Move(piece, piece.x - 2, piece.y + 2).isValid(self)
+        downRight   = Move(piece, piece.x + 2, piece.y + 2).isValid(self)
+
+        if piece.isKing: return upLeft or upRight or downLeft or downRight
+        elif piece.color == Player.white: return upLeft or upRight
+        elif piece.color == Player.black: return downLeft or downRight
+
+    def pieceCanMove(self, piece):
+        valid = False
+        
+        upLeft      = Move(piece, piece.x - 1, piece.y - 1).isValid(self)
+        upRight     = Move(piece, piece.x + 1, piece.y - 1).isValid(self)
+        downLeft    = Move(piece, piece.x - 1, piece.y + 1).isValid(self)
+        downRight   = Move(piece, piece.x + 1, piece.y + 1).isValid(self)
+
+        if piece.isKing: valid = upLeft or upRight or downLeft or downRight
+        elif piece.color == Player.white: valid = upLeft or upRight
+        elif piece.color == Player.black: valid = downLeft or downRight
+        
+        return self.pieceCanJump(piece) or valid
 
     def __str__(self): #by Aaron
         out = ''

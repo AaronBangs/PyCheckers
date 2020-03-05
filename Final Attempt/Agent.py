@@ -1,6 +1,7 @@
 #JMJ
 #Agent.py
 #An interface to make moves in a game of checkers.
+#Programmed by Ben Campbell
 
 class Agent:
     def __init__(self, color):

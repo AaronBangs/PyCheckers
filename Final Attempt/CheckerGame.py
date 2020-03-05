@@ -1,8 +1,10 @@
 #JMJ
 #CheckerGame.py
 #Contains everything you need for a basic game of checkers.
+#Programmed by Ben Campbell
 
 from PyCheckers import *
+import os
 
 class CheckerGame():
     def __init__(self, blackAgent, whiteAgent):
@@ -15,6 +17,9 @@ class CheckerGame():
         currentPlayer = self.blackPlayer
 
         while not self.isOver:
+            
+            os.system('cls')
+            
             if currentPlayer.color == Player.black:
                 print("Black's turn!")
             elif currentPlayer.color == Player.white:
@@ -26,21 +31,17 @@ class CheckerGame():
             move.play(self.board)
 
             #check for double jump
-            while move.isJump(self.board) and self.pieceCanJump(move.piece) and currentPlayer.shouldDoubleJump(self.board, move.piece):
-                move = currentPlayer.selectDoubleJump(self.board, move.piece)
-                move.play(self.board)
+            while move.isJump(self.board) and self.board.pieceCanJump(move.piece) and currentPlayer.shouldDoubleJump(self.board, move.piece):
+                newMove = currentPlayer.selectDoubleJump(self.board, move.piece)
+                if newMove.isJump(self.board):
+                    move = newMove
+                    move.play(self.board)
+                else:
+                    print("That's not a jump.")
+                    continue
 
             if currentPlayer.color == Player.black:
                 currentPlayer = self.whitePlayer
             else:
                 currentPlayer = self.blackPlayer
-
-    def pieceCanJump(self, piece):
-        upLeft      = Move(piece, piece.x - 2, piece.y - 2).isValid(self.board)
-        upRight     = Move(piece, piece.x + 2, piece.y - 2).isValid(self.board)
-        downLeft    = Move(piece, piece.x - 2, piece.y + 2).isValid(self.board)
-        downRight   = Move(piece, piece.x + 2, piece.y + 2).isValid(self.board)
-
-        if piece.isKing: return upLeft or upRight or downLeft or downRight
-        elif piece.color == Player.white: return upLeft or upRight
-        elif piece.color == Player.black: return downLeft or downRight
+            

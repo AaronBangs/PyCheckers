@@ -1,6 +1,7 @@
 #JMJ
 #Human.py
 #A way for humans to play checkers.
+#Programmed by Ben Campbell
 
 from PyCheckers import *
 from Agent import Agent
@@ -10,8 +11,16 @@ class Human(Agent):
         # select a piece
         piece = None
         while piece == None:
-            from_x = int(input("from x:"))
-            from_y = int(input("from y:"))
+            try: #Try / except added by Aaron to avoid crashes
+                from_x = int(input("from x:"))
+            except:
+                print("Invalid entry. Try again.")
+                continue
+            try:
+                from_y = int(input("from y:"))
+            except:
+                print("Invalid entry. Try again.")
+                continue
 
             if not board.withinBounds(from_x, from_y):
                 print("That's not on the board, silly")
@@ -23,13 +32,28 @@ class Human(Agent):
                 print("That piece is the wrong color")
                 continue
 
+            
+
             piece = board.getPieceAt(from_x, from_y)
+
+            if not board.pieceCanMove(piece):
+                print("That piece can't move")
+                piece = None
+                continue
 
         # get the destination
         move = None
         while move == None:
-            to_x = int(input("to x:"))
-            to_y = int(input("to y:"))
+            try:
+                to_x = int(input("to x:"))
+            except:
+                print("Invalid entry. Try again.")
+                continue
+            try:
+                to_y = int(input("to y:"))
+            except:
+                print("Invalid entry. Try again.")
+                continue
 
             if not board.withinBounds(to_x, to_y):
                 print("That's not on the board, silly")
