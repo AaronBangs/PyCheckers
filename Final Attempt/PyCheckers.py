@@ -50,19 +50,17 @@ class Move():
         #print(self)
         
     
-    def isValid(self, board): #Checks to see if the move is valid on a given board; by Aaron
-        return  (board.withinBounds(self.to_x, self.to_y) #The move does not go off of the board
-                )and(
-                not board.occupied(self.to_x, self.to_y) #There is not a piece occupying the space being moved to
-                )and(
-                
-                (
-                abs(self.delta_x) == 1 and abs(self.delta_y) == 1  #Move is not a jump
-                )or(
-                abs(self.delta_x) == 2 and abs(self.delta_y) == 2  #If move is a jump
-                and board.find(self.capture) #Make sure there is a piece of the opposite color in the next space
-                )
-                )
+    def isValid(self, board): #Checks to see if the move is valid on a given board; by Aaron, modified by Ben
+        onBoard = board.withinBounds(self.to_x, self.to_y) #The move does not go off of the board
+        spaceIsEmpty = not board.occupied(self.to_x, self.to_y) #There is not a piece occupying the space being moved to
+        moveIsSingle = abs(self.delta_x) == 1 and abs(self.delta_y) == 1  #Move is not a jump
+        moveIsJump = abs(self.delta_x) == 2 and abs(self.delta_y) == 2  #If move is a jump
+        enemyInMiddle = board.find(self.capture) #Make sure there is a piece of the opposite color in the next space
+        isForward = self.piece.isKing \
+            or (self.piece.color == Player.black and self.direction[1] == 1) \
+            or (self.piece.color == Player.white and self.direction[1] == -1)
+        
+        return onBoard and spaceIsEmpty and (moveIsSingle or (moveIsJump and enemyInMiddle)) and isForward
     
     def isJump(self, board): #You should always make sure the move is valid BEFORE calling this to check if it is a jump; by Aaron
         return (abs(self.delta_x) == 2 and abs(self.delta_y) == 2)
