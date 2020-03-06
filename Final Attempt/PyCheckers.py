@@ -133,7 +133,7 @@ class Board():
             return False
         return True
     
-    def getPossibleMove(self, piece): #by Gerard
+    def getPossibleMoves(self, piece): #by Gerard
         
         moveDictionary = {
             "upLeftJump"      : Move(piece, piece.x - 2, piece.y - 2),
@@ -144,9 +144,7 @@ class Board():
             "upLeft"      : Move(piece, piece.x - 1, piece.y - 1),
             "upRight"     : Move(piece, piece.x + 1, piece.y - 1),
             "downLeft"    : Move(piece, piece.x - 1, piece.y + 1),
-            "downRight"   : Move(piece, piece.x + 1, piece.y + 1)
- 
-            }
+            "downRight"   : Move(piece, piece.x + 1, piece.y + 1)            }
 
          for move in moveDictionary:
              if not moveDictionary[move].isValid():
