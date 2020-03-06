@@ -146,7 +146,7 @@ class Board():
             "downLeft"    : Move(piece, piece.x - 1, piece.y + 1),
             "downRight"   : Move(piece, piece.x + 1, piece.y + 1)            }
 
-         for move in moveDictionary:
+        for move in moveDictionary:
              if not moveDictionary[move].isValid():
                  del moveDictionary[move]
         return moveDictionary.values()

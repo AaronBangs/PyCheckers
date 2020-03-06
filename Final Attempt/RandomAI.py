@@ -7,7 +7,7 @@ from PyCheckers import *
 from Agent import Agent
 import random
 
-class Random(Agent):
+class RandomAI(Agent):
 
     def getAllPieces(self, board):
         piece = None
@@ -20,7 +20,7 @@ class Random(Agent):
         return pieceArray
     
     def getAllMoves(self, board):
-        pieceArray = getAllPieces(board)
+        pieceArray = self.getAllPieces(board)
         #Places all movable pieces into an array.
         for i in pieceArray:
             for move in board.getPossibleMoves(piece):
@@ -28,11 +28,23 @@ class Random(Agent):
         return moveArray
 
     def selectMove(self, board):
-        moveArray = getAllMoves(board)
-
-        return random.choice(moveArray)
+        while True:
+            moveArray = self.getAllMoves(board)
+            selectedMove = random.choice(moveArray)
+            if selectedMove.piece.color == self.color:
+                return selectedMove
+            else:
+                continue
     
     def shouldDoubleJump(self, board, piece):
         return True
 
     def selectDoubleJump(self, board, piece):
+        while True:
+            moveArray = board.getPossibleMoves(piece)
+            selectedMove = random.choice(moveArray)
+            if selectedMove.piece.color == color and selectedMove.isJump(board):
+                return selectedMove
+            else:
+                continue
+        

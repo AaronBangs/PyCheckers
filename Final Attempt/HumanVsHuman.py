@@ -5,10 +5,11 @@
 
 from CheckerGame import CheckerGame
 from Human import Human
+from RandomAI import RandomAI
 from PyCheckers import Player
 
 def __main__():
-    blackPlayer = Human(Player.black)
+    blackPlayer = RandomAI(Player.black)
     whitePlayer = Human(Player.white)
 
     game = CheckerGame(blackPlayer, whitePlayer)
