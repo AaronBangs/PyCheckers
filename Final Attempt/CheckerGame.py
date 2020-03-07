@@ -28,6 +28,16 @@ class CheckerGame():
             print(self.board)
 
             move = currentPlayer.selectMove(self.board)
+
+            if move == None:
+                if currentPlayer.color == Player.black:
+                    print("White wins!")
+                else:
+                    print("Black wins!")
+                
+                self.isOver = True
+                break
+            
             move.play(self.board)
 
             #check for double jump

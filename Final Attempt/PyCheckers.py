@@ -72,15 +72,22 @@ class Move():
                 p = board.find(self.capture)
                 board.remove(p)
 
-            print(str(self))
+            #print(str(self))
             self.piece.x = self.to_x
             self.piece.y = self.to_y
+            
+            if (self.piece.y == 7 and self.piece.color == Player.black) or (self.piece.y == 0 and self.piece.color == Player.white):
+                self.piece.makeKing() #Make the piece a king if it reaches the end of the board
+            
         else:
             print("Move is invalid. \n" + str(self))
 
+    #def __repr__(self):
+    #    return str('Piece: ' + str(self.piece) + '\n To x: ' + str(self.to_x) + '\n To y: ' + str(self.to_y) + '\n Delta x: ' + str(self.delta_x) + '\n Delta y: ' + str(self.delta_y) + '\n Direction: ' + str(self.direction) + '\n Capture (if jump): ' + str(self.capture) + '\n')
+    
     def __repr__(self):
-        return str('Piece: ' + str(self.piece) + '\n To x: ' + str(self.to_x) + '\n To y: ' + str(self.to_y) + '\n Delta x: ' + str(self.delta_x) + '\n Delta y: ' + str(self.delta_y) + '\n Direction: ' + str(self.direction) + '\n Capture (if jump): ' + str(self.capture) + '\n')
-
+        return "(%i, %i) -> (%i, %i)" %(self.piece.x, self.piece.y, self.to_x, self.to_y)
+        
 class Board():
     def __init__(self, blank=False):
 
@@ -105,7 +112,7 @@ class Board():
     def occupied(self, x, y): #Checks if there is any piece at position x, y; by Aaron
         for p in self.grid:
             if p.x == x and p.y == y:
-                print("Space occupied: (%i, %i)" % (x, y))
+                #print("Space occupied: (%i, %i)" % (x, y))
                 return True
         return False
 
@@ -129,27 +136,31 @@ class Board():
 
     def withinBounds(self, x, y): #by Aaron
         if x < 0 or x > (self.WIDTH - 1) or y < 0 or y > (self.HEIGHT - 1):
-            print("(%i, %i) is outside Board." % (x, y))
+            #print("(%i, %i) is outside Board." % (x, y))
             return False
         return True
     
     def getPossibleMoves(self, piece): #by Gerard
-        
-        moveDictionary = {
-            "upLeftJump"      : Move(piece, piece.x - 2, piece.y - 2),
-            "upRightJump"     : Move(piece, piece.x + 2, piece.y - 2),
-            "downLeftJump"   : Move(piece, piece.x - 2, piece.y + 2),
-            "downRightJump"   : Move(piece, piece.x + 2, piece.y + 2),
-        
-            "upLeft"      : Move(piece, piece.x - 1, piece.y - 1),
-            "upRight"     : Move(piece, piece.x + 1, piece.y - 1),
-            "downLeft"    : Move(piece, piece.x - 1, piece.y + 1),
-            "downRight"   : Move(piece, piece.x + 1, piece.y + 1)            }
+        moves = \
+            [
+            Move(piece, piece.x - 2, piece.y - 2),\
+            Move(piece, piece.x + 2, piece.y - 2),\
+            Move(piece, piece.x - 2, piece.y + 2),\
+            Move(piece, piece.x + 2, piece.y + 2),\
+            Move(piece, piece.x - 1, piece.y - 1),\
+            Move(piece, piece.x + 1, piece.y - 1),\
+            Move(piece, piece.x - 1, piece.y + 1),\
+            Move(piece, piece.x + 1, piece.y + 1)
+            ]
 
-        for move in moveDictionary:
-             if not moveDictionary[move].isValid():
-                 del moveDictionary[move]
-        return moveDictionary.values()
+        #print(moves)
+
+        validMoves = []
+        
+        for move in moves:
+             if move.isValid(self):
+                 validMoves.append(move)
+        return validMoves
                  
         
         

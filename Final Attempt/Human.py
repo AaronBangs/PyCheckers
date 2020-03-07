@@ -7,7 +7,12 @@ from PyCheckers import *
 from Agent import Agent
 
 class Human(Agent):
+    
     def selectMove(self, board):
+
+        if self.getAllMoves(board) == []:
+            return None
+        
         # select a piece
         piece = None
         while piece == None:
