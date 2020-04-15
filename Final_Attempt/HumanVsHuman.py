@@ -9,8 +9,8 @@ from RandomAI import RandomAI
 from PyCheckers import Player
 
 def __main__():
-    blackPlayer = RandomAI(Player.black)
-    whitePlayer = RandomAI(Player.white)
+    blackPlayer = Human(Player.black)
+    whitePlayer = Human(Player.white)
 
     game = CheckerGame(blackPlayer, whitePlayer)
     game.play()

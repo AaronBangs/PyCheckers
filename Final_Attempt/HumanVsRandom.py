@@ -1,5 +1,5 @@
 #JMJ
-#HumanVsHuman.py
+#HumanVsRandom.py
 #Plays a game of checkers between two humans
 #Programmed by Ben Campbell
 
@@ -10,7 +10,7 @@ from PyCheckers import Player
 
 def __main__():
     blackPlayer = RandomAI(Player.black)
-    whitePlayer = RandomAI(Player.white)
+    whitePlayer = Human(Player.white)
 
     game = CheckerGame(blackPlayer, whitePlayer)
     game.play()
