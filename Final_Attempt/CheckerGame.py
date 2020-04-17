@@ -27,8 +27,6 @@ class CheckerGame():
         MAX_TURNS = 150
         
         
-        currentPlayer = self.blackPlayer
-
         if prints:
             if str(type(self.blackPlayer)) == "<class 'AaronAI.AaronAI'>":
                 print("Player %i" % (self.blackPlayer.id_num), end='')
@@ -42,19 +40,17 @@ class CheckerGame():
             
             if self.prints_on: os.system('cls')
             
-            if currentPlayer.color == Player.black:
+            if self.currentPlayer.color == Player.black:
                 if self.prints_on: print("Black's turn!")
-            elif currentPlayer.color == Player.white:
+            elif self.currentPlayer.color == Player.white:
                 if self.prints_on: print("White's turn!")
 
             if self.prints_on: print(self.board)
 
-            if str(type(currentPlayer)) == "<class 'AaronAI.AaronAI'>":
-                move = currentPlayer.selectMove(self.board, 2)
+            if str(type(self.currentPlayer)) == "<class 'AaronAI.AaronAI'>":
+                move = self.currentPlayer.selectMove(self.board, 2)
             else:
-                move = currentPlayer.selectMove(self.board)
-
-            move = self.currentPlayer.selectMove(self.board)
+                move = self.currentPlayer.selectMove(self.board)
 
             self.applyMove(move)
 
