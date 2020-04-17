@@ -10,7 +10,7 @@ class Human(Agent):
     
     def selectMove(self, board):
 
-        if self.getAllMoves(board) == []:
+        if Agent.getAllMoves(board, self.color) == []:
             return None
         
         # select a piece
