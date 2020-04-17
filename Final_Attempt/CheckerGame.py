@@ -7,11 +7,12 @@ from PyCheckers import Board, Player
 import os, copy
 
 class CheckerGame():
-    def __init__(self, blackAgent, whiteAgent):
-        self.blackPlayer = blackAgent
-        self.whitePlayer = whiteAgent
+    def __init__(self, blackAgent, whiteAgent, prints_on=True):
         self.board = Board()
         self.isOver = False
+        self.blackPlayer = blackAgent
+        self.whitePlayer = whiteAgent
+        self.prints_on = prints_on
         self.winner = None
         self.currentPlayer = blackAgent
 
@@ -22,24 +23,46 @@ class CheckerGame():
         else:
             return self.blackPlayer
 
-    def play(self):
+    def play(self, prints=False):
+        MAX_TURNS = 150
+        
+        
+        currentPlayer = self.blackPlayer
 
+        if prints:
+            if str(type(self.blackPlayer)) == "<class 'AaronAI.AaronAI'>":
+                print("Player %i" % (self.blackPlayer.id_num), end='')
+            if str(type(self.whitePlayer)) == "<class 'AaronAI.AaronAI'>":
+                print(" vs Player %i" % self.whitePlayer.id_num, end='')
+            print()
+
+        num_of_turns = 0
+        
         while not self.isOver:
             
-            os.system('cls')
+            if self.prints_on: os.system('cls')
             
-            if self.currentPlayer.color == Player.black:
-                print("Black's turn!")
-            elif self.currentPlayer.color == Player.white:
-                print("White's turn!")
+            if currentPlayer.color == Player.black:
+                if self.prints_on: print("Black's turn!")
+            elif currentPlayer.color == Player.white:
+                if self.prints_on: print("White's turn!")
 
-            print(self.board)
+            if self.prints_on: print(self.board)
+
+            if str(type(currentPlayer)) == "<class 'AaronAI.AaronAI'>":
+                move = currentPlayer.selectMove(self.board, 2)
+            else:
+                move = currentPlayer.selectMove(self.board)
 
             move = self.currentPlayer.selectMove(self.board)
 
             self.applyMove(move)
 
             if self.isOver:
+                break
+
+            num_of_turns += 1
+            if num_of_turns > MAX_TURNS:
                 break
 
             #check for double jump
@@ -49,7 +72,7 @@ class CheckerGame():
                     move = newMove
                     self.applyMove(move)
                 else:
-                    print("That's not a jump.")
+                    if self.prints_on: print("That's not a jump.")
                     continue
 
             self.currentPlayer = self.next_player

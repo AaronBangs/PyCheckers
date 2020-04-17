@@ -31,6 +31,18 @@ class Piece():
             return True
         return False
 
+    def neighbors(self, board):
+        x = self.x
+        y = self.y
+
+        neighbors = [board.getPieceAt(x+1,y+1),board.getPieceAt(x+1,y-1),board.getPieceAt(x-1,y+1),board.getPieceAt(x-1,y-1)]
+
+        for piece in neighbors:
+            if piece == None:
+                del piece
+
+        return neighbors
+
     def makeKing(self): #by Aaron
         self.isKing = True
 
@@ -98,7 +110,7 @@ class Board():
 
         for y in range(0,self.HEIGHT): #Adds the first pieces onto the board; by Aaron
             for x in range(0,self.WIDTH):
-                if (x + y)%2 == 0:
+                if (x + y)%2 == 1:
                     if y < 3:
                         self.grid.append(Piece(x, y, Player.black))
                     elif y > 4:
@@ -127,7 +139,7 @@ class Board():
         for piece in self.grid:
             if piece.x == x and piece.y == y:
                 return piece
-        print("Could not find piece at location (%i, %i)" % (x, y))
+        #print("Could not find piece at location (%i, %i)" % (x, y))
         return None
 
     def movePieceTo(self, piece, x, y): #by Aaron
@@ -202,9 +214,9 @@ class Board():
             for x in range(0,8):
                 
                 if (x+y)%2 == 0:
-                    addchr = '   ' #Add black squares to the appropriate places (this is meant for dark mode) 
+                    addchr = '███' #Add filled squares to the appropriate places (this is meant for dark mode) 
                 else:
-                    addchr = '███' #Add white squares to the appropriate places
+                    addchr = '   ' #Add empty squares to the appropriate places
                 
                 for p in self.grid: #Loops through each piece in the grid every time... there may be a more efficient way of doing this
                     if p.x == x and p.y == y: #If the x and y of the piece matches the x and y being appended to the output string

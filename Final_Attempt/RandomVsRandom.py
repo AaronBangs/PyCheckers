@@ -1,5 +1,5 @@
 #JMJ
-#RandomVsRandom.py
+#HumanVsHuman.py
 #Plays a game of checkers between two humans
 #Programmed by Ben Campbell
 

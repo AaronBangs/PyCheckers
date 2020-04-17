@@ -1,5 +1,0 @@
-In Play_Checkers:
-	we have TakeTurn()
-	we need TakeDoubleJump()
-		provides us with a limited turn where the first piece () is already selected
-	
