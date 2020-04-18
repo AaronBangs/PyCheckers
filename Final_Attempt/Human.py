@@ -3,7 +3,7 @@
 #A way for humans to play checkers.
 #Programmed by Ben Campbell
 
-from PyCheckers import *
+from PyCheckers import Move
 from Agent import Agent
 
 class Human(Agent):

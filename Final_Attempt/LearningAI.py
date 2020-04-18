@@ -3,12 +3,13 @@
 #Computer program which makes random moves.
 #Section programmed by Aaron Bangs
 
-from PyCheckers import *
+from PyCheckers import Move
 from Agent import Agent
 import random
 
 class LearningAI(Agent):
     def selectMove(self, board):
+        self.board = board
         pass
 
     def preprocess(self, board): #Processes a board to be formatted in Portable Draughts Notation, where it returns an array, with each position in the array marking one possible position on the board, holding a value of 1 for the current player and -1 for the opponent.
@@ -34,8 +35,8 @@ class LearningAI(Agent):
 
     def makeMove(self, pdn_loc_from, pdn_loc_to): #Returns a Move() object when given data in Portable Droughts Notation
 
-        x1, y1 = toCoords(pdn_loc_from)
-        x2, y2 = toCoords(pdn_loc_to)
+        x1, y1 = self.toCoords(pdn_loc_from)
+        x2, y2 = self.toCoords(pdn_loc_to)
         
         return Move(self.board.getPieceAt(x1,y1), x2, y2)
 

@@ -3,7 +3,6 @@
 #Computer program which makes random moves.
 #Section programmed by Gerard Pepin
 
-from PyCheckers import *
 from Agent import Agent
 import random
 
