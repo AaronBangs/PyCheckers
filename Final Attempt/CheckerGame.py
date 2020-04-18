@@ -8,13 +8,13 @@ import os, copy
 
 class CheckerGame():
     def __init__(self, blackAgent, whiteAgent, prints_on=True):
-        self.board = Board()
-        self.isOver = False
         self.blackPlayer = blackAgent
         self.whitePlayer = whiteAgent
-        self.prints_on = prints_on
+        self.board = Board()
+        self.isOver = False
         self.winner = None
         self.currentPlayer = blackAgent
+        self.prints_on = prints_on
 
     @property
     def next_player(self):
@@ -35,10 +35,10 @@ class CheckerGame():
             print()
 
         num_of_turns = 0
-        
+
         while not self.isOver:
             
-            if self.prints_on: os.system('cls')
+            os.system('cls')
             
             if self.currentPlayer.color == Player.black:
                 if self.prints_on: print("Black's turn!")
@@ -53,13 +53,13 @@ class CheckerGame():
                 move = self.currentPlayer.selectMove(self.board)
 
             self.applyMove(move)
-
-            if self.isOver:
-                break
-
             num_of_turns += 1
             if num_of_turns > MAX_TURNS:
                 break
+
+            if self.isOver:
+                break
+            
 
             #check for double jump
             while move.isJump(self.board) and self.board.pieceCanJump(move.piece) and self.currentPlayer.shouldDoubleJump(self.board, move.piece):
@@ -68,7 +68,7 @@ class CheckerGame():
                     move = newMove
                     self.applyMove(move)
                 else:
-                    if self.prints_on: print("That's not a jump.")
+                    print("That's not a jump.")
                     continue
 
             self.currentPlayer = self.next_player
