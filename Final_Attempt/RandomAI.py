@@ -3,7 +3,6 @@
 #Computer program which makes random moves.
 #Section programmed by Gerard Pepin
 
-from PyCheckers import *
 from Agent import Agent
 import random
 
@@ -11,11 +10,11 @@ class RandomAI(Agent):
     
     def selectMove(self, board):
         while True:
-            moveArray = self.getAllMoves(board)
+            moveArray = Agent.getAllMoves(board, self.color)
             if moveArray == []:
                 return None
             selectedMove = random.choice(moveArray)
-            print("\n\nSelected Move: " + str(selectedMove) + "\n\n")
+            # print("\n\nSelected Move: " + str(selectedMove) + "\n\n")
             return selectedMove
     
     def shouldDoubleJump(self, board, piece):
@@ -34,7 +33,7 @@ class RandomAI(Agent):
             
             selectedMove = random.choice(jumpArray)
 
-            print("-> (%i, %i)" %(selectedMove.to_x, selectedMove.to_y))
+            # print("-> (%i, %i)" %(selectedMove.to_x, selectedMove.to_y))
             
             return selectedMove
         

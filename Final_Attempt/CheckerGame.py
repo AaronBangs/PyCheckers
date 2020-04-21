@@ -3,23 +3,30 @@
 #Contains everything you need for a basic game of checkers.
 #Programmed by Ben Campbell
 
-from PyCheckers import *
-import os
+from PyCheckers import Board, Player
+import os, copy
 
 class CheckerGame():
     def __init__(self, blackAgent, whiteAgent, prints_on=True):
-        self.board = Board()
-        self.isOver = False
         self.blackPlayer = blackAgent
         self.whitePlayer = whiteAgent
+        self.board = Board()
+        self.isOver = False
+        self.winner = None
+        self.currentPlayer = blackAgent
         self.prints_on = prints_on
+
+    @property
+    def next_player(self):
+        if self.currentPlayer.color == Player.black:
+            return self.whitePlayer
+        else:
+            return self.blackPlayer
 
     def play(self, prints=False):
         MAX_TURNS = 150
         
         
-        currentPlayer = self.blackPlayer
-
         if prints:
             if str(type(self.blackPlayer)) == "<class 'AaronAI.AaronAI'>":
                 print("Player %i" % (self.blackPlayer.id_num), end='')
@@ -28,52 +35,83 @@ class CheckerGame():
             print()
 
         num_of_turns = 0
-        
+
         while not self.isOver:
             
-            if self.prints_on: os.system('cls')
+            os.system('cls')
             
-            if currentPlayer.color == Player.black:
+            if self.currentPlayer.color == Player.black:
                 if self.prints_on: print("Black's turn!")
-            elif currentPlayer.color == Player.white:
+            elif self.currentPlayer.color == Player.white:
                 if self.prints_on: print("White's turn!")
 
             if self.prints_on: print(self.board)
 
-            if str(type(currentPlayer)) == "<class 'AaronAI.AaronAI'>":
-                move = currentPlayer.selectMove(self.board, 2)
+            if str(type(self.currentPlayer)) == "<class 'AaronAI.AaronAI'>":
+                move = self.currentPlayer.selectMove(self.board, 2)
             else:
-                move = currentPlayer.selectMove(self.board)
+                move = self.currentPlayer.selectMove(self.board)
 
-
-            if move == None:
-                if currentPlayer.color == Player.black:
-                    if self.prints_on: print("White wins!")
-                    return Player.white
-                else:
-                    if self.prints_on: print("Black wins!")
-                    return Player.black
-                
-                self.isOver = True
-                break
-            
-            move.play(self.board)
+            self.applyMove(move)
             num_of_turns += 1
             if num_of_turns > MAX_TURNS:
-                return None
+                break
+
+            if self.isOver:
+                break
+            
 
             #check for double jump
-            while move.isJump(self.board) and self.board.pieceCanJump(move.piece) and currentPlayer.shouldDoubleJump(self.board, move.piece):
-                newMove = currentPlayer.selectDoubleJump(self.board, move.piece)
+            while move.isJump(self.board) and self.board.pieceCanJump(move.piece) and self.currentPlayer.shouldDoubleJump(self.board, move.piece):
+                newMove = self.currentPlayer.selectDoubleJump(self.board, move.piece)
                 if newMove.isJump(self.board):
                     move = newMove
-                    move.play(self.board)
+                    self.applyMove(move)
                 else:
-                    if self.prints_on: print("That's not a jump.")
+                    print("That's not a jump.")
                     continue
 
-            if currentPlayer.color == Player.black:
-                currentPlayer = self.whitePlayer
+            self.currentPlayer = self.next_player
+        
+        if self.winner is Player.black:
+            print("Black Wins!")
+        else:
+            print("White Wins!")
+
+    def playSilently(self):
+        while not self.isOver:
+            move = self.currentPlayer.selectMove(self.board)
+            self.applyMove(move)
+            if self.isOver:
+                break
+
+            #check for double jump
+            while move.isJump(self.board) and self.board.pieceCanJump(move.piece) and self.currentPlayer.shouldDoubleJump(self.board, move.piece):
+                newMove = self.currentPlayer.selectDoubleJump(self.board, move.piece)
+                if newMove.isJump(self.board):
+                    move = newMove
+                    self.applyMove(move)
+
+            self.currentPlayer = self.next_player
+
+        return self.winner
+
+    def applyMove(self, move):
+        if move == None:
+            if self.currentPlayer.color == Player.black:
+                self.winner = Player.black
             else:
-                currentPlayer = self.blackPlayer
+                self.winner = Player.white
             
+            self.isOver = True
+            return
+
+        move.play(self.board)
+
+
+    def getState(self):
+        '''
+        returns a deep copy of the game so you can record it's state while still
+        being able to play on. This is probably inefficient.
+        '''
+        return copy.deepcopy(self)

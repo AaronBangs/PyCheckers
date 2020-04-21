@@ -1,16 +1,16 @@
 #JMJ
-#RandomVsRandom.py
-#Plays a game of checkers between two humans
+#HumanVsMonteCarlo.py
+#Plays a game of checkers between you and a MonteCarlo Bot
 #Programmed by Ben Campbell
 
 from CheckerGame import CheckerGame
 from Human import Human
-from RandomAI import RandomAI
+from MonteCarloAI import MonteCarloAI
 from PyCheckers import Player
 
 def __main__():
-    blackPlayer = RandomAI(Player.black)
-    whitePlayer = RandomAI(Player.white)
+    whitePlayer = Human(Player.white)
+    blackPlayer = MonteCarloAI(Player.black, 70, 1.5)
 
     game = CheckerGame(blackPlayer, whitePlayer)
     game.play()

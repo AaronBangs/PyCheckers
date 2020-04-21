@@ -3,14 +3,14 @@
 #A way for humans to play checkers.
 #Programmed by Ben Campbell
 
-from PyCheckers import *
+from PyCheckers import Move
 from Agent import Agent
 
 class Human(Agent):
     
     def selectMove(self, board):
 
-        if self.getAllMoves(board) == []:
+        if Agent.getAllMoves(board, self.color) == []:
             return None
         
         # select a piece

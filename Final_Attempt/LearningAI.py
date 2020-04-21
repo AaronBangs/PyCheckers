@@ -3,7 +3,7 @@
 #Computer program which makes random moves.
 #Section programmed by Aaron Bangs
 
-from PyCheckers import *
+from PyCheckers import Move
 from Agent import Agent
 import random
 import numpy
@@ -11,6 +11,7 @@ import keras
 
 class LearningAI(Agent):
     def selectMove(self, board):
+        self.board = board
         pass
 
     def preprocess(self, board): #Processes a board to be formatted in Portable Draughts Notation, where it returns an array, with each position in the array marking one possible position on the board, holding a value of 1 for the current player and -1 for the opponent.

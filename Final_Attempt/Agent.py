@@ -8,16 +8,18 @@ class Agent:
     def __init__(self, color):
         self.color = color
 
-    def getAllPieces(self, board):#Aaron
+    @staticmethod
+    def getAllPieces(board, color):#Aaron
         pieceArray = []
         moveArray = []
         for eachPiece in board.grid:
-            if board.pieceCanMove(eachPiece) and eachPiece.color == self.color:
+            if board.pieceCanMove(eachPiece) and eachPiece.color == color:
                 pieceArray.append(eachPiece)
         return pieceArray
     
-    def getAllMoves(self, board):#Aaron
-        pieceArray = self.getAllPieces(board)
+    @staticmethod
+    def getAllMoves(board, color):#Aaron
+        pieceArray = Agent.getAllPieces(board, color)
         #Places all movable pieces into an array.
         moveArray = []
         for piece in pieceArray:
