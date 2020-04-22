@@ -23,13 +23,13 @@ class RandomBot(Bot):
     @staticmethod
     def coordsToString(x, y):
         """ converts coordinates into a string like 2x3 """
-        return str(x) + "x" + str(y)
+        return str(x+1) + "x" + str(8-y)
 
     @staticmethod
     def stringToCoords(string):
         """ converts a string like 2x3 into a tuple like (2, 3) """
         coords = string.split('x')
-        return (int(coords[0]), int(coords[1]))
+        return (int(coords[0])-1, 8-int(coords[1]))
 
     def makemove(self):
         """

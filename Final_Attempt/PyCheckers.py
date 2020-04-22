@@ -98,7 +98,7 @@ class Board():
 
         for y in range(0,self.HEIGHT): #Adds the first pieces onto the board; by Aaron
             for x in range(0,self.WIDTH):
-                if (x + y)%2 == 0:
+                if (x + y - 1)%2 == 0:
                     if y < 3:
                         self.grid.append(Piece(x, y, Player.black))
                     elif y > 4:
@@ -201,7 +201,7 @@ class Board():
             
             for x in range(0,8):
                 
-                if (x+y)%2 == 0:
+                if (x+y-1)%2 == 0:
                     addchr = '   ' #Add black squares to the appropriate places (this is meant for dark mode) 
                 else:
                     addchr = '███' #Add white squares to the appropriate places
