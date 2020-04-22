@@ -6,6 +6,8 @@
 from PyCheckers import Move
 from Agent import Agent
 import random
+import numpy
+import keras
 
 class LearningAI(Agent):
     def selectMove(self, board):
@@ -33,46 +35,18 @@ class LearningAI(Agent):
         y = ((pdn-1) // 4)
         return(x,y)
 
-    def makeMove(self, pdn_loc_from, pdn_loc_to): #Returns a Move() object when given data in Portable Droughts Notation
+    def toMove(self, pdn_loc_from, pdn_loc_to, board): #Returns a Move() object when given data in Portable Droughts Notation
 
         x1, y1 = self.toCoords(pdn_loc_from)
         x2, y2 = self.toCoords(pdn_loc_to)
         
-        return Move(self.board.getPieceAt(x1,y1), x2, y2)
+        return Move(board.getPieceAt(x1,y1), x2, y2)
 
     
             
 
 """
-class RandomAI(Agent):
-    
-    def selectMove(self, board):
-        while True:
-            moveArray = self.getAllMoves(board)
-            if moveArray == []:
-                return None
-            selectedMove = random.choice(moveArray)
-            print("\n\nSelected Move: " + str(selectedMove) + "\n\n")
-            return selectedMove
-    
-    def shouldDoubleJump(self, board, piece):
-        return random.choice([True, False])
 
-    def selectDoubleJump(self, board, piece):
-        while True:
-            moveArray = board.getPossibleMoves(piece)
-            jumpArray = []
-            
-            for move in moveArray:
-                if move.isJump(board):
-                    jumpArray.append(move)
-            
-            #print("Jump array: " + str(jumpArray))
-            
-            selectedMove = random.choice(jumpArray)
-
-            print("-> (%i, %i)" %(selectedMove.to_x, selectedMove.to_y))
-            
             return selectedMove
         
 """
