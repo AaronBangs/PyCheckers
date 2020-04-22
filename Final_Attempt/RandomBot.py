@@ -49,7 +49,17 @@ class RandomBot(Bot):
 
         move.play(self.board)
 
-        # print(self.board)
+        while move.isJump(self.board) and self.board.pieceCanJump(move.piece) and self.agent.shouldDoubleJump(self.board, move.piece):
+                newMove = self.agent.selectDoubleJump(self.board, move.piece)
+                if newMove.isJump(self.board):
+                    move = newMove
+                    move.play(self.board)
+                    moveList.append(self.coordsToString(move.to_x, move.to_y))
+                else:
+                    print("That's not a jump.")
+                    continue
+
+        print(piecePosition, moveList)
 
         return (piecePosition, moveList)
 
