@@ -57,9 +57,18 @@ class Bot:
         """
         raise NotImplementedError()
 
-    def getBoardStr(self):
+    def get_board_str(self):
         """
         returns a string representing the board. You can do this however you want,
         as long as it makes sense.
+        """
+        raise NotImplementedError()
+
+    def undo_last_move(self):
+        """
+        called when the other bot returns false for recieve_move. This is sent to the
+        bot who made the move, telling it to undo the last move it made. If the last move
+        had several jumps, all of them are undone, so the board is in the same state it
+        was in before the move was made.
         """
         raise NotImplementedError()
