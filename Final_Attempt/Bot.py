@@ -31,7 +31,7 @@ When passing a move, the move should be stored in a tuple. The first element is 
 
 class Bot:
 
-    def __init__(self, color, botFolder):
+    def __init__(self, color):
         self.color = color
 
     def make_move(self):

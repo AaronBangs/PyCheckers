@@ -12,7 +12,7 @@ from RandomAI import RandomAI
 
 class RandomBot(Bot):
 
-    def __init__(self, color, botFolder):
+    def __init__(self, color):
             if (color == "black"):
                 color = Player.black
             else:
@@ -33,7 +33,7 @@ class RandomBot(Bot):
         coords = string.split('x')
         return (int(coords[0])-1, 8-int(coords[1]))
 
-    def makemove(self):
+    def make_move(self):
         """
         Returns a tuple. The first is the piece that's moving
         The second item is an array that contains the posiitions it
@@ -78,7 +78,7 @@ class RandomBot(Bot):
 
         return (piecePosition, moveList)
 
-    def receiveMove(self, move):
+    def receive_move(self, move):
         """
         Receives a move from the other bot and applies it to
         to its own gamestate.
@@ -122,3 +122,6 @@ class RandomBot(Bot):
         was in before the move was made.
         """
         self.board = self.last_board_state
+
+    def get_board_str(self):
+        return str(self.board)

@@ -25,7 +25,7 @@ class Agent:
         for piece in pieceArray:
             for move in board.getPossibleMoves(piece):
                 moveArray.append(move)
-        return moveArray
+        return board.getAllPossibleMoves(color)
 
     def selectMove(self, board):
         '''returns a move'''

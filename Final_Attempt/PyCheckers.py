@@ -160,11 +160,26 @@ class Board():
         for move in moves:
              if move.isValid(self):
                  validMoves.append(move)
+
         return validMoves
-                 
+    
+    def getAllPossibleMoves(self, color):
+        pieces = list(filter(lambda p: p.color == color, self.grid))
+        moves = []
+
+        jumpIsPossible = False
+        for p in pieces:
+            piece_moves = self.getPossibleMoves(p)
+            moves.extend(piece_moves)
+            if not jumpIsPossible:
+                for m in piece_moves:
+                    if m.isJump(self):
+                        jumpIsPossible = True
+
+        if jumpIsPossible:
+            moves = list(filter(lambda m: m.isJump(self), moves))
         
-        
-      
+        return moves
 
     def pieceCanJump(self, piece):
         upLeft      = Move(piece, piece.x - 2, piece.y - 2).isValid(self)

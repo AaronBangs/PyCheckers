@@ -4,40 +4,48 @@ import time
 
 class Controller:
 
-    def __init__(self, blackBot, redBot):
-        self.redBot = redBot
-        self.blackBot = blackBot
+    def __init__(self, black_bot, red_bot):
+        self.red_bot = red_bot
+        self.black_bot = black_bot
+        self.winner = None
 
     def do_turn(self, mover, reciever):
+        if self.winner != None:
+            return
+        
         move_is_valid = False
 
         while not move_is_valid:
-            move = mover.makemove()
+            move = mover.make_move()
 
             if move == "resign":
                 self.winner = reciever
                 break
 
-            move_is_valid = reciever.receiveMove(move)
+            move_is_valid = reciever.receive_move(move)
             if not move_is_valid:
                 mover.undo_last_move()
 
         os.system("cls")
-        print(self.blackBot.board)
-        time.sleep(0.1)
+        print(self.black_bot.get_board_str())
 
-    def runGame(self):
-        while True:
-            self.do_turn(self.redBot, self.blackBot)
-            self.do_turn(self.blackBot, self.redBot)
+    def run_game(self):
+        while self.winner == None:
+            self.do_turn(self.red_bot, self.black_bot)
+            self.do_turn(self.black_bot, self.red_bot)
 
-    #print winner
+        if self.winner == self.red_bot:
+            print("Red wins!")
+        else:
+            print("Black wins!")
+
+        input("Press a key to close")
 
 def main():
-    redBot = RandomBot("red", None)
-    blackBot = RandomBot("black", None)
-    controller = Controller(blackBot, redBot)
-    controller.runGame()
+    red_bot = RandomBot("red")
+    black_bot = RandomBot("black")
+    controller = Controller(black_bot, red_bot)
+    controller.run_game()
 
 if __name__ == "__main__":
     main()
