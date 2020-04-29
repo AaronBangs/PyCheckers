@@ -3,7 +3,7 @@ import os
 import time
 
 BLACK_BOT = MonteCarloBot("black")
-RED_BOT = MonteCarloBot("red")
+RED_BOT = RandomBot("red")
 
 '''
 from PyCheckers import Board
@@ -48,6 +48,7 @@ class Controller:
                 mover.undo_last_move()
 
         # os.system("cls")
+        time.sleep(0.5)
         print(self.black_bot.get_board_str())
 
     def run_game(self):

@@ -7,6 +7,7 @@
 import math
 import random
 import copy
+import time
 
 from Agent import Agent
 from RandomAI import RandomAI
@@ -107,9 +108,9 @@ class MCTSNode(object):
 
 
 class MonteCarloAI(Agent):
-    def __init__(self, color, num_rounds, temperature):
+    def __init__(self, color, max_time, temperature):
         Agent.__init__(self, color)
-        self.num_rounds = num_rounds
+        self.max_time = max_time
         self.temperature = temperature
 
 # tag::mcts-signature[]
@@ -134,7 +135,6 @@ class MonteCarloAI(Agent):
         move = self.chooseBestMoveFromTree(root, gameState)
         move.piece = board.getPieceAt(move.piece.x, move.piece.y)
         #input("Press a key to continue")
-        return move
     
     def shouldDoubleJump(self, board, piece):
         return True
@@ -172,7 +172,12 @@ class MonteCarloAI(Agent):
         return move
 
     def performRollouts(self, root):
-        for i in range(self.num_rounds):
+        end = int(time.time()) + self.max_time
+        i = 0
+        print("Calculating for %d seconds..." % self.max_time)
+        while time.time() < end:
+            i = i + 1
+        # for i in range(self.num_rounds):
             node = root
             while (not node.can_add_child()) and (not node.is_terminal()) and (len(node.children) > 0):
                 node = self.select_child(node)
@@ -183,12 +188,13 @@ class MonteCarloAI(Agent):
             
             # Simulate a random game from this node.
             winner = self.simulate_random_game(node.game_state)
-            print("simulated game %d/%d" % (i+1, self.num_rounds), end="          \r")
+            # print("%d seconds left. %d games simulated." % (end - int(time.time()), i), end="          \r")
             
             # Propagate scores back up the tree.
             while node is not None:
                 node.record_win(winner)
                 node = node.parent
+        print("%d random games simulated" % i)
         
         return root
 
@@ -199,7 +205,8 @@ class MonteCarloAI(Agent):
         ]
         scored_moves.sort(key=lambda x: x[0], reverse=True)
         for s, m, n in scored_moves[:10]:
-            print('%s - %.3f (%d)' % (m, s, n))
+            # print('%s - %.3f (%d)' % (m, s, n))
+            pass
 
 # tag::mcts-selection[]
         # Having performed as many MCTS rounds as we have time for, we

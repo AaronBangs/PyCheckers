@@ -141,7 +141,7 @@ class RandomBot(AgentBot):
         super().__init__(agent)
 
 
-SIMULATED_GAMES = 5
+SECONDS_CALCULATING = 30
 TEMPERATURE = 1.5
 
 class MonteCarloBot(AgentBot):
@@ -151,6 +151,7 @@ class MonteCarloBot(AgentBot):
         else:
             color = Player.white
 
-        agent = MonteCarloAI(color, SIMULATED_GAMES, TEMPERATURE)
+        agent = MonteCarloAI(color, SECONDS_CALCULATING, TEMPERATURE)
         super().__init__(agent)
 
+ 
