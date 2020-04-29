@@ -134,7 +134,8 @@ class MonteCarloAI(Agent):
         self.performRollouts(root)
         move = self.chooseBestMoveFromTree(root, gameState)
         move.piece = board.getPieceAt(move.piece.x, move.piece.y)
-        #input("Press a key to continue")
+        return move
+        # input("Press a key to continue")
     
     def shouldDoubleJump(self, board, piece):
         return True
@@ -168,7 +169,7 @@ class MonteCarloAI(Agent):
         self.performRollouts(root)
         move = self.chooseBestMoveFromTree(root, gameState)
         move.piece = board.getPieceAt(move.piece.x, move.piece.y)
-        input("Press a key to continue")
+        # input("Press a key to continue")
         return move
 
     def performRollouts(self, root):
