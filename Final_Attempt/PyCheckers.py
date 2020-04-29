@@ -49,7 +49,6 @@ class Move():
         
         #FOR DEBUGGING PURPOSES
         #print(self)
-        
     
     def isValid(self, board): #Checks to see if the move is valid on a given board; by Aaron, modified by Ben
         onBoard = board.withinBounds(self.to_x, self.to_y) #The move does not go off of the board
@@ -96,6 +95,9 @@ class Board():
         
         self.grid = []
 
+        if blank:
+            return
+
         for y in range(0,self.HEIGHT): #Adds the first pieces onto the board; by Aaron
             for x in range(0,self.WIDTH):
                 if (x + y - 1)%2 == 0:
@@ -103,6 +105,47 @@ class Board():
                         self.grid.append(Piece(x, y, Player.black))
                     elif y > 4:
                         self.grid.append(Piece(x, y, Player.white))
+
+    @staticmethod
+    def from_string(s):
+        """
+        converts a string like this to a board:
+           0  1  2  3  4  5  6  7 
+        0 ███ ○ ███ ○ ███ ○ ███ ○
+        1  ○ ███ ○ ███ ○ ███ ○ ███
+        2 ███ ○ ███ ○ ███ ○ ███ ○
+        3    ███   ███   ███   ███
+        4 ███   ███   ███   ███
+        5  ● ███ ● ███ ● ███ ● ███
+        6 ███ ● ███ ● ███ ● ███ ●
+        7  ● ███ ● ███ ● ███ ● ███
+        """
+        board = Board(True)
+        str_array = s.split('\n')
+        str_array = str_array[1:] # remove the numbers at the top
+        for y, row_str in enumerate(str_array):
+            str_array[y] = row_str[1:] # remove the numbers at the right
+            str_array[y] = str_array[y].split("███")
+            for x, space_str in enumerate(str_array[y]):
+                space_str = space_str.strip()
+
+                # get pieces from dots/squares
+                if space_str != '':
+                    if y%2 == 0: # even rows
+                        board.grid.append(Board.str_to_piece(space_str, x*2-1, y))
+                    else: # odd rows
+                        board.grid.append(Board.str_to_piece(space_str, x*2, y))
+        return board
+
+    @staticmethod
+    def str_to_piece(s, x, y):
+        piece = Piece(x, y, Player.black)
+        if s == '●' or s == '■':
+            piece.color = Player.white
+        if s == '□' or s == '■':
+            piece.makeKing()
+        return piece
+
 
     def find(self, piece): #Checks if there is a specific piece on the board; by Aaron
         for p in self.grid:
@@ -208,7 +251,7 @@ class Board():
     def __str__(self): #by Aaron
         out = ''
         
-        print('   0  1  2  3  4  5  6  7 ') #Print the numbers to indicate x positions
+        out += '   0  1  2  3  4  5  6  7 \n' #Print the numbers to indicate x positions
         
         for y in range(0,8):
             

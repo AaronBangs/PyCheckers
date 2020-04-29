@@ -8,9 +8,12 @@ from Human import Human
 from MonteCarloAI import MonteCarloAI
 from PyCheckers import Player
 
+SIMULATED_GAMES = 2
+TEMPERATURE = 1.5
+
 def __main__():
     whitePlayer = Human(Player.white)
-    blackPlayer = MonteCarloAI(Player.black, 70, 1.5)
+    blackPlayer = MonteCarloAI(Player.black, SIMULATED_GAMES, TEMPERATURE)
 
     game = CheckerGame(blackPlayer, whitePlayer)
     game.play()

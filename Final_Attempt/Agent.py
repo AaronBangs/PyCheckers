@@ -11,7 +11,6 @@ class Agent:
     @staticmethod
     def getAllPieces(board, color):#Aaron
         pieceArray = []
-        moveArray = []
         for eachPiece in board.grid:
             if board.pieceCanMove(eachPiece) and eachPiece.color == color:
                 pieceArray.append(eachPiece)

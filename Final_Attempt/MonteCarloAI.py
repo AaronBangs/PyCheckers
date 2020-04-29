@@ -59,7 +59,7 @@ class MCTSNode(object):
         }
         self.num_rollouts = 0
         self.children = []
-        self.unvisited_moves = Agent.getAllMoves(game_state.board, self.AgentColor)
+        self.unvisited_moves = game_state.board.getAllPossibleMoves(color)
 # end::mcts-node[]
 
 # tag::mcts-add-child[]
@@ -73,6 +73,13 @@ class MCTSNode(object):
         self.children.append(new_node)
         return new_node
 # end::mcts-add-child[]
+    def add_child(self, move):
+        new_game_state = self.game_state.getState()
+        new_game_state.applyMove(copy.deepcopy(move))
+        new_game_state.currentPlayer = new_game_state.next_player
+        new_node = MCTSNode(new_game_state, self.AgentColor, self, move)
+        self.children.append(new_node)
+        return new_node
 
 # tag::mcts-record-win[]
     def record_win(self, winner):
@@ -89,6 +96,13 @@ class MCTSNode(object):
 
     def winning_frac(self, player):
         return float(self.win_counts[player]) / float(self.num_rollouts)
+
+    def __str__(self):
+        if len(self.children) == 0:
+            return "MCTSNode %s;%s;%d/%d []" % (self.game_state.currentPlayer.color, self.move, self.win_counts[self.AgentColor], self.num_rollouts)
+        else:
+            children = '\n, '.join(str(c) for c in self.children)
+            return "MCTSNode %s;%s;%d/%d [\n %s \n]" % (self.game_state.currentPlayer.color, self.move, self.win_counts[self.AgentColor], self.num_rollouts, children)
 # end::mcts-readers[]
 
 
@@ -100,6 +114,12 @@ class MonteCarloAI(Agent):
 
 # tag::mcts-signature[]
     def selectMove(self, board):
+        moves = board.getAllPossibleMoves(self.color)
+        if len(moves) == 1:
+            return moves[0]
+        if len(moves) == 0:
+            return None
+
         gameState = CheckerGame(Agent(Player.black), Agent(Player.white))
         if self.color is Player.black:
             gameState.blackPlayer = self
@@ -110,12 +130,51 @@ class MonteCarloAI(Agent):
         
         gameState.board = copy.deepcopy(board)
         root = MCTSNode(gameState, self.color)
-# end::mcts-signature[]
+        self.performRollouts(root)
+        move = self.chooseBestMoveFromTree(root, gameState)
+        move.piece = board.getPieceAt(move.piece.x, move.piece.y)
+        #input("Press a key to continue")
+        return move
+    
+    def shouldDoubleJump(self, board, piece):
+        return True
 
-# tag::mcts-rounds[]
+    def selectDoubleJump(self, board, piece):
+        '''returns a move after a double jump'''
+        gameState = CheckerGame(Agent(Player.black), Agent(Player.white))
+        if self.color is Player.black:
+            gameState.blackPlayer = self
+            gameState.currentPlayer = self
+        else:
+            gameState.whitePlayer = self
+            gameState.currentPlayer = gameState.whitePlayer
+        
+        gameState.board = copy.deepcopy(board)
+
+        moves = board.getPossibleMoves(piece)
+        moves = list(filter(lambda m: m.isJump(self), moves))
+
+        if len(moves) == 1:
+            return moves[0]
+
+        root = MCTSNode(gameState, self.color)
+        for move in moves:
+            node = root.add_child(move)
+            winner = self.simulate_random_game(node.game_state)
+            while node is not None:
+                node.record_win(winner)
+                node = node.parent
+        root.unvisited_moves = []
+        self.performRollouts(root)
+        move = self.chooseBestMoveFromTree(root, gameState)
+        move.piece = board.getPieceAt(move.piece.x, move.piece.y)
+        input("Press a key to continue")
+        return move
+
+    def performRollouts(self, root):
         for i in range(self.num_rounds):
             node = root
-            while (not node.can_add_child()) and (not node.is_terminal()):
+            while (not node.can_add_child()) and (not node.is_terminal()) and (len(node.children) > 0):
                 node = self.select_child(node)
             
             # Add a new child node into the tree.
@@ -124,14 +183,16 @@ class MonteCarloAI(Agent):
             
             # Simulate a random game from this node.
             winner = self.simulate_random_game(node.game_state)
-            print("\rsimulated game %d/%d" % (i, self.num_rounds))
+            print("simulated game %d/%d" % (i+1, self.num_rounds), end="          \r")
             
             # Propagate scores back up the tree.
             while node is not None:
                 node.record_win(winner)
                 node = node.parent
-# end::mcts-rounds[]
-        #
+        
+        return root
+
+    def chooseBestMoveFromTree(self, root, gameState):
         scored_moves = [
             (child.winning_frac(gameState.next_player.color), child.move, child.num_rollouts)
             for child in root.children
@@ -151,16 +212,14 @@ class MonteCarloAI(Agent):
                 best_pct = child_pct
                 best_move = child.move
         print('Select move %s with win pct %.3f' % (best_move, best_pct))
-        best_move.piece = board.getPieceAt(best_move.piece.x, best_move.piece.y)
         return best_move
-# end::mcts-selection[]
 
 # tag::mcts-uct[]
     def select_child(self, node):
         """Select a child according to the upper confidence bound for
         trees (UCT) metric.
         """
-        total_rollouts = sum(child.num_rollouts for child in node.children)
+        total_rollouts = max(sum(child.num_rollouts for child in node.children), 1)
         log_rollouts = math.log(total_rollouts)
 
         best_score = -1
@@ -188,19 +247,3 @@ class MonteCarloAI(Agent):
         else:
             randomGame.currentPlayer = randomGame.whitePlayer
         return randomGame.playSilently()
-
-'''
-for debugging:
-from CheckerGame import CheckerGame
-from RandomAI import RandomAI
-from PyCheckers import Player
-from Human import Human
-
-blackPlayer = Human(Player.black)
-whitePlayer = Human(Player.white)
-
-game = CheckerGame(blackPlayer, whitePlayer)
-game.playSilently()
-print(game.board)
-
-'''

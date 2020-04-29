@@ -1,6 +1,27 @@
-from RandomBot import RandomBot
+from AgentBots import RandomBot, MonteCarloBot
 import os
 import time
+
+BLACK_BOT = MonteCarloBot("black")
+RED_BOT = MonteCarloBot("red")
+
+'''
+from PyCheckers import Board
+s = """   0  1  2  3  4  5  6  7
+0 ███   ███   ███   ███
+1    ███   ███   ███   ███
+2 ███ ○ ███   ███ ● ███
+3    ███   ███   ███ ■ ███
+4 ███ ○ ███ ○ ███ ○ ███
+5    ███   ███   ███   ███
+6 ███ □ ███   ███   ███
+7    ███   ███   ███   ███"""
+b = Board.from_string(s)
+self.red_bot.board = b
+self.black_bot.board = Board.from_string(str(b))
+
+
+'''
 
 class Controller:
 
@@ -26,7 +47,7 @@ class Controller:
             if not move_is_valid:
                 mover.undo_last_move()
 
-        os.system("cls")
+        # os.system("cls")
         print(self.black_bot.get_board_str())
 
     def run_game(self):
@@ -42,9 +63,7 @@ class Controller:
         input("Press a key to close")
 
 def main():
-    red_bot = RandomBot("red")
-    black_bot = RandomBot("black")
-    controller = Controller(black_bot, red_bot)
+    controller = Controller(BLACK_BOT, RED_BOT)
     controller.run_game()
 
 if __name__ == "__main__":

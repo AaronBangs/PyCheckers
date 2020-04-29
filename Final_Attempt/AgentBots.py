@@ -1,7 +1,7 @@
 # +JMJ+
-# AgentBot.py
-# An class to have our randomAI play games with other bots. This does not actually play a game,
-# it just communicates with a game that's already being run.
+# AgentBots.py
+# A modue with classes to have our agents play games with other bots. These do not actually 
+# play a game, it just communicates with a game that's already being run.
 #
 # Programmed by Ben Campbell
 
@@ -9,17 +9,21 @@ import copy
 from Bot import Bot
 from PyCheckers import Player, Board, Move
 from RandomAI import RandomAI
+from MonteCarloAI import MonteCarloAI
 
-class RandomBot(Bot):
+class AgentBot(Bot):
+    """
+    The class that translates from Agents to bots.
 
-    def __init__(self, color):
-            if (color == "black"):
-                color = Player.black
-            else:
-                color = Player.white
+    Example tree: 
+    Agent->RandomAI;
+    Bot->AgentBot->RandomBot;
+    RandomBot has it's own instance of RandomAI to make moves.
+    """
 
+    def __init__(self, Agent):
             self.board = Board()
-            self.agent = RandomAI(color)
+            self.agent = Agent
             self.last_board_state = None
 
     @staticmethod
@@ -40,7 +44,7 @@ class RandomBot(Bot):
         ends up in or the steps in a multiple jump.
         """
         
-        self.last_board_state = copy.deepcopy(self.board) # deep copy because otherwise moving pieces would
+        self.last_board_state = copy.deepcopy(self.board)
 
         moveList = []
         piecePosition = ""
@@ -101,7 +105,7 @@ class RandomBot(Bot):
                 return False
 
         for move in moveList:
-            to_x, to_y = RandomBot.string_to_coords(move)
+            to_x, to_y = self.string_to_coords(move)
             if not self.board.withinBounds(to_x, to_y):
                 print("That's not on the board, silly")
                 return False
@@ -125,3 +129,28 @@ class RandomBot(Bot):
 
     def get_board_str(self):
         return str(self.board)
+
+class RandomBot(AgentBot):
+    def __init__(self, color):
+        if (color == "black"):
+            color = Player.black
+        else:
+            color = Player.white
+
+        agent = RandomAI(color)
+        super().__init__(agent)
+
+
+SIMULATED_GAMES = 5
+TEMPERATURE = 1.5
+
+class MonteCarloBot(AgentBot):
+    def __init__(self, color):
+        if (color == "black"):
+            color = Player.black
+        else:
+            color = Player.white
+
+        agent = MonteCarloAI(color, SIMULATED_GAMES, TEMPERATURE)
+        super().__init__(agent)
+
