@@ -3,11 +3,13 @@
 #Computer program which makes random moves.
 #Section programmed by Aaron Bangs
 
-from PyCheckers import Move
-from Agent import Agent
 import random
 import numpy
 import keras
+
+from py_checkers.game import Move
+from py_checkers.agent import Agent
+
 
 class LearningAI(Agent):
     def selectMove(self, board):

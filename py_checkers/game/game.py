@@ -3,7 +3,7 @@
 #Contains everything you need for a basic game of checkers.
 #Programmed by Ben Campbell
 
-from PyCheckers import Board, Player
+from py_checkers.game import Board, Player
 import os, copy
 
 class CheckerGame():

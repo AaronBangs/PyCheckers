@@ -1,0 +1,19 @@
+1. Restructure Board and other PyChecker classes:
+    - make board/game function with states instead of dynamically changing objects (to save weird bugs and time copying)
+    - make multi-jumps one move
+    - get a more efficient way to return all possible moves
+        - maybe have each state have a list of all possible moves, and the next state just adds/removes moves based off 
+        of it's parent and the move that was made
+
+2. Improve Monte-Carlo Bot
+    - Find ways to make random rollouts faster
+        - Changes in 1, especially having an efficient way to get all possible moves
+        - Multi-threading?
+    - Find ways to make random rollouts smarter.
+        - maybe partially random, but they know basic strategy.
+        - the textbook mentions using machine learning to quickly evaluate a board/make moves
+    - Make a way to use old rollouts instead of starting from scratch on every move
+
+3. Clean up code:
+    - make everything follow naming conventions. I suggest the standard python ones.
+    - organize things in packages and modules (a quick google search can explain what these are)

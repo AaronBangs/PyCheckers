@@ -9,10 +9,8 @@ import random
 import copy
 import time
 
-from Agent import Agent
-from RandomAI import RandomAI
-from PyCheckers import Player, Move
-from CheckerGame import CheckerGame
+from py_checkers.agent import Agent, RandomAI
+from py_checkers.game import Player, Move, CheckerGame
 
 def fmt(x):
     if x is Player.black:

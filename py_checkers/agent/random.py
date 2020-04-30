@@ -3,7 +3,7 @@
 #Computer program which makes random moves.
 #Section programmed by Gerard Pepin
 
-from Agent import Agent
+from py_checkers.agent import Agent
 import random
 
 class RandomAI(Agent):

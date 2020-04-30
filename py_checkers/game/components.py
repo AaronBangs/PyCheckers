@@ -280,31 +280,3 @@ class Board():
                 
             out += '\n'
         return out
-
-
-
-#for debugging purposes:
-"""
-b = Board()
-print(b)
-p = b.getPieceAt(2,2)
-b.movePieceTo(p,3,3)
-print(b)
-p = b.getPieceAt(5,5)
-b.movePieceTo(p,4,4)
-print(b)
-p = b.getPieceAt(3,3)
-b.movePieceTo(p,5,5)
-print(b)
-p = b.getPieceAt(7,1)
-b.movePieceTo(p,8,2)
-print(b)
-p = b.getPieceAt(4,2)
-b.movePieceTo(p,5,3)
-print(b)
-p = b.getPieceAt(4,6)
-b.movePieceTo(p,6,4)
-print(b)
-b.movePieceTo(p,4,2)
-print(b)
-"""

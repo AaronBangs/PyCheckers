@@ -6,10 +6,9 @@
 # Programmed by Ben Campbell
 
 import copy
-from Bot import Bot
-from PyCheckers import Player, Board, Move
-from RandomAI import RandomAI
-from MonteCarloAI import MonteCarloAI
+from py_checkers.ai_api import Bot
+from py_checkers.game import Player, Board, Move
+from py_checkers.agent import RandomAI, MonteCarloAI
 
 class AgentBot(Bot):
     """
