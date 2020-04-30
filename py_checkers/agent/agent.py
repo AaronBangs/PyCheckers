@@ -10,18 +10,18 @@ class Agent:
 
     @staticmethod
     def get_all_pieces(board, color):#Aaron
-        pieceArray = []
+        piece_array = []
         for eachPiece in board.grid:
             if board.piece_can_move(eachPiece) and eachPiece.color == color:
-                pieceArray.append(eachPiece)
-        return pieceArray
+                piece_array.append(eachPiece)
+        return piece_array
     
     @staticmethod
     def get_all_moves(board, color):#Aaron
-        pieceArray = Agent.get_all_pieces(board, color)
+        piece_array = Agent.get_all_pieces(board, color)
         #Places all movable pieces into an array.
         moveArray = []
-        for piece in pieceArray:
+        for piece in piece_array:
             for move in board.get_all_possible_moves(piece):
                 moveArray.append(move)
         return board.get_all_possible_moves(color)

@@ -45,41 +45,41 @@ class AgentBot(Bot):
         
         self.last_board_state = copy.deepcopy(self.board)
 
-        moveList = []
-        piecePosition = ""
+        move_list = []
+        piece_position = ""
 
-        move = self.agent.selectMove(self.board)
+        move = self.agent.select_move(self.board)
         if (move == None):
             return "resign"
 
-        pieceWasNotKing = not move.piece.isKing
+        piece_was_not_king = not move.piece.is_king
 
-        moveList.append(self.coords_to_string(move.to_x, move.to_y))
-        piecePosition = self.coords_to_string(move.piece.x, move.piece.y)
+        move_list.append(self.coords_to_string(move.to_x, move.to_y))
+        piece_position = self.coords_to_string(move.piece.x, move.piece.y)
 
         move.play(self.board)
 
-        pieceIsNowKing = move.piece.isKing
-        if pieceWasNotKing and pieceIsNowKing:
-            return (piecePosition, moveList)
+        piece_is_now_king = move.piece.is_king
+        if piece_was_not_king and piece_is_now_king:
+            return (piece_position, move_list)
 
-        while move.isJump(self.board) and self.board.piece_can_jump(move.piece) and self.agent.shouldDoubleJump(self.board, move.piece):
-                newMove = self.agent.selectDoubleJump(self.board, move.piece)
-                if newMove.isJump(self.board):
-                    move = newMove
+        while move.is_jump(self.board) and self.board.piece_can_jump(move.piece) and self.agent.should_double_jump(self.board, move.piece):
+                new_move = self.agent.select_double_jump(self.board, move.piece)
+                if new_move.is_jump(self.board):
+                    move = new_move
                     move.play(self.board)
-                    moveList.append(self.coords_to_string(move.to_x, move.to_y))
+                    move_list.append(self.coords_to_string(move.to_x, move.to_y))
 
-                    pieceIsNowKing = move.piece.isKing
-                    if pieceWasNotKing and pieceIsNowKing:
+                    piece_is_now_king = move.piece.is_king
+                    if piece_was_not_king and piece_is_now_king:
                         break
                 else:
                     print("That's not a jump.")
                     continue
 
-        print(piecePosition, moveList)
+        print(piece_position, move_list)
 
-        return (piecePosition, moveList)
+        return (piece_position, move_list)
 
     def receive_move(self, move):
         """
@@ -91,25 +91,25 @@ class AgentBot(Bot):
         Else, it returns true.
         """
         piece_x, piece_y = self.string_to_coords(move[0])
-        moveList = move[1]
+        move_list = move[1]
 
-        piece = self.board.getPieceAt(piece_x, piece_y)
+        piece = self.board.get_piece_at(piece_x, piece_y)
 
         if piece.color is self.agent.color:
             print("That's my piece, not yours!")
             return False
 
-        if not self.board.pieceCanMove(piece):
+        if not self.board.piece_can_move(piece):
                 print("That piece can't move")
                 return False
 
-        for move in moveList:
+        for move in move_list:
             to_x, to_y = self.string_to_coords(move)
-            if not self.board.withinBounds(to_x, to_y):
+            if not self.board.within_bounds(to_x, to_y):
                 print("That's not on the board, silly")
                 return False
             move = Move(piece, to_x, to_y)
-            if not move.isValid(self.board):
+            if not move.is_valid(self.board):
                 print("That is not a valid move")
                 return False
             move.play(self.board)
@@ -134,7 +134,7 @@ class RandomBot(AgentBot):
         if (color == "black"):
             color = Player.black
         else:
-            color = Player.white
+            color = Player.red
 
         agent = RandomAI(color)
         super().__init__(agent)
@@ -148,7 +148,7 @@ class MonteCarloBot(AgentBot):
         if (color == "black"):
             color = Player.black
         else:
-            color = Player.white
+            color = Player.red
 
         agent = MonteCarloAI(color, SECONDS_CALCULATING, TEMPERATURE)
         super().__init__(agent)

@@ -42,7 +42,7 @@ class LearningAI(Agent):
         x1, y1 = self.to_coords(pdn_loc_from)
         x2, y2 = self.to_coords(pdn_loc_to)
         
-        return Move(board.getPieceAt(x1,y1), x2, y2)
+        return Move(board.get_piece_at(x1,y1), x2, y2)
 
     
             

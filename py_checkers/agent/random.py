@@ -10,30 +10,30 @@ class RandomAI(Agent):
     
     def select_move(self, board):
         while True:
-            moveArray = board.getAllPossibleMoves(self.color)
-            if moveArray == []:
+            move_array = board.get_all_possible_moves(self.color)
+            if move_array == []:
                 return None
-            selectedMove = random.choice(moveArray)
-            # print("\n\nSelected Move: " + str(selectedMove) + "\n\n")
-            return selectedMove
+            selected_move = random.choice(move_array)
+            # print("\n\nSelected Move: " + str(selected_move) + "\n\n")
+            return selected_move
     
     def should_double_jump(self, board, piece):
         return True
 
     def select_double_jump(self, board, piece):
         while True:
-            moveArray = board.getPossibleMoves(piece)
-            jumpArray = []
+            move_array = board.get_possible_moves(piece)
+            jump_array = []
             
-            for move in moveArray:
-                if move.isJump(board):
-                    jumpArray.append(move)
+            for move in move_array:
+                if move.is_jump(board):
+                    jump_array.append(move)
             
-            #print("Jump array: " + str(jumpArray))
+            #print("Jump array: " + str(jump_array))
             
-            selectedMove = random.choice(jumpArray)
+            selected_move = random.choice(jump_array)
 
-            # print("-> (%i, %i)" %(selectedMove.to_x, selectedMove.to_y))
+            # print("-> (%i, %i)" %(selected_move.to_x, selected_move.to_y))
             
-            return selectedMove
+            return selected_move
         
