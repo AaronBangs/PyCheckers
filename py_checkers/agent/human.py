@@ -8,9 +8,9 @@ from py_checkers.agent import Agent
 
 class Human(Agent):
     
-    def selectMove(self, board):
+    def select_move(self, board):
 
-        if Agent.getAllMoves(board, self.color) == []:
+        if Agent.get_all_moves(board, self.color) == []:
             return None
         
         # select a piece
@@ -27,21 +27,21 @@ class Human(Agent):
                 print("Invalid entry. Try again.")
                 continue
 
-            if not board.withinBounds(from_x, from_y):
+            if not board.within_bounds(from_x, from_y):
                 print("That's not on the board, silly")
                 continue
             if not board.occupied(from_x, from_y):
                 print("There is no piece at (%i, %i)" % (from_x, from_y))
                 continue
-            if board.getPieceAt(from_x, from_y).color != self.color:
+            if board.get_piece_at(from_x, from_y).color != self.color:
                 print("That piece is the wrong color")
                 continue
 
             
 
-            piece = board.getPieceAt(from_x, from_y)
+            piece = board.get_piece_at(from_x, from_y)
 
-            if not board.pieceCanMove(piece):
+            if not board.piece_can_move(piece):
                 print("That piece can't move")
                 piece = None
                 continue
@@ -60,24 +60,24 @@ class Human(Agent):
                 print("Invalid entry. Try again.")
                 continue
 
-            if not board.withinBounds(to_x, to_y):
+            if not board.within_bounds(to_x, to_y):
                 print("That's not on the board, silly")
                 continue
             move = Move(piece, to_x, to_y)
-            if not move.isValid(board):
+            if not move.is_valid(board):
                 print("That is not a valid move")
                 move = None
                 continue
         
         return move
 
-    def shouldDoubleJump(self, board, piece):
+    def should_double_jump(self, board, piece):
         answer = input("Would you like to double jump (y/n):")
         if answer == 'y':
             return True
         return False
 
-    def selectDoubleJump(self, board, piece):
+    def select_double_jump(self, board, piece):
         print (board)
 
         # get the destination
@@ -86,11 +86,11 @@ class Human(Agent):
             to_x = int(input("to x:"))
             to_y = int(input("to y:"))
 
-            if not board.withinBounds(to_x, to_y):
+            if not board.within_bounds(to_x, to_y):
                 print("That's not on the board, silly")
                 continue
             move = Move(piece, to_x, to_y)
-            if not move.isValid(board):
+            if not move.is_valid(board):
                 print("That is not a valid move")
                 move = None
                 continue

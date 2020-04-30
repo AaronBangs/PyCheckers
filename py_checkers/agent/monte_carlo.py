@@ -44,8 +44,6 @@ def show_tree(node, indent='', max_depth=3):
     for child in sorted(node.children, key=lambda n: n.num_rollouts, reverse=True):
         show_tree(child, indent + '  ', max_depth - 1)
 
-
-# tag::mcts-node[]
 class MCTSNode(object):
     def __init__(self, game_state, color, parent=None, move=None):
         self.game_state = game_state
@@ -58,10 +56,8 @@ class MCTSNode(object):
         }
         self.num_rollouts = 0
         self.children = []
-        self.unvisited_moves = game_state.board.getAllPossibleMoves(color)
-# end::mcts-node[]
+        self.unvisited_moves = game_state.board.get_all_possible_moves(color)
 
-# tag::mcts-add-child[]
     def add_random_child(self):
         index = random.randint(0, len(self.unvisited_moves) - 1)
         new_move = self.unvisited_moves.pop(index)
@@ -71,7 +67,7 @@ class MCTSNode(object):
         new_node = MCTSNode(new_game_state, self.AgentColor, self, new_move)
         self.children.append(new_node)
         return new_node
-# end::mcts-add-child[]
+
     def add_child(self, move):
         new_game_state = self.game_state.getState()
         new_game_state.applyMove(copy.deepcopy(move))
@@ -80,13 +76,10 @@ class MCTSNode(object):
         self.children.append(new_node)
         return new_node
 
-# tag::mcts-record-win[]
     def record_win(self, winner):
         self.win_counts[winner] += 1
         self.num_rollouts += 1
-# end::mcts-record-win[]
 
-# tag::mcts-readers[]
     def can_add_child(self):
         return len(self.unvisited_moves) > 0
 
@@ -102,8 +95,6 @@ class MCTSNode(object):
         else:
             children = '\n, '.join(str(c) for c in self.children)
             return "MCTSNode %s;%s;%d/%d [\n %s \n]" % (self.game_state.currentPlayer.color, self.move, self.win_counts[self.AgentColor], self.num_rollouts, children)
-# end::mcts-readers[]
-
 
 class MonteCarloAI(Agent):
     def __init__(self, color, max_time, temperature):
@@ -111,9 +102,8 @@ class MonteCarloAI(Agent):
         self.max_time = max_time
         self.temperature = temperature
 
-# tag::mcts-signature[]
-    def selectMove(self, board):
-        moves = board.getAllPossibleMoves(self.color)
+    def select_move(self, board):
+        moves = board.get_all_possible_moves(self.color)
         if len(moves) == 1:
             return moves[0]
         if len(moves) == 0:
@@ -129,16 +119,16 @@ class MonteCarloAI(Agent):
         
         gameState.board = copy.deepcopy(board)
         root = MCTSNode(gameState, self.color)
-        self.performRollouts(root)
-        move = self.chooseBestMoveFromTree(root, gameState)
+        self.perform_rollouts(root)
+        move = self.choose_best_move_from_tree(root, gameState)
         move.piece = board.getPieceAt(move.piece.x, move.piece.y)
         return move
         # input("Press a key to continue")
     
-    def shouldDoubleJump(self, board, piece):
+    def should_double_jump(self, board, piece):
         return True
 
-    def selectDoubleJump(self, board, piece):
+    def select_double_jump(self, board, piece):
         '''returns a move after a double jump'''
         gameState = CheckerGame(Agent(Player.black), Agent(Player.white))
         if self.color is Player.black:
@@ -164,13 +154,13 @@ class MonteCarloAI(Agent):
                 node.record_win(winner)
                 node = node.parent
         root.unvisited_moves = []
-        self.performRollouts(root)
-        move = self.chooseBestMoveFromTree(root, gameState)
+        self.perform_rollouts(root)
+        move = self.choose_best_move_from_tree(root, gameState)
         move.piece = board.getPieceAt(move.piece.x, move.piece.y)
         # input("Press a key to continue")
         return move
 
-    def performRollouts(self, root):
+    def perform_rollouts(self, root):
         end = int(time.time()) + self.max_time
         i = 0
         print("Calculating for %d seconds..." % self.max_time)
@@ -197,7 +187,7 @@ class MonteCarloAI(Agent):
         
         return root
 
-    def chooseBestMoveFromTree(self, root, gameState):
+    def choose_best_move_from_tree(self, root, gameState):
         scored_moves = [
             (child.winning_frac(gameState.next_player.color), child.move, child.num_rollouts)
             for child in root.children
@@ -207,7 +197,6 @@ class MonteCarloAI(Agent):
             # print('%s - %.3f (%d)' % (m, s, n))
             pass
 
-# tag::mcts-selection[]
         # Having performed as many MCTS rounds as we have time for, we
         # now pick a move.
         best_move = None
@@ -220,7 +209,6 @@ class MonteCarloAI(Agent):
         print('Select move %s with win pct %.3f' % (best_move, best_pct))
         return best_move
 
-# tag::mcts-uct[]
     def select_child(self, node):
         """Select a child according to the upper confidence bound for
         trees (UCT) metric.
@@ -241,7 +229,6 @@ class MonteCarloAI(Agent):
                 best_score = uct_score
                 best_child = child
         return best_child
-# end::mcts-uct[]
 
     @staticmethod
     def simulate_random_game(game):

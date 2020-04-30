@@ -9,30 +9,30 @@ class Agent:
         self.color = color
 
     @staticmethod
-    def getAllPieces(board, color):#Aaron
+    def get_all_pieces(board, color):#Aaron
         pieceArray = []
         for eachPiece in board.grid:
-            if board.pieceCanMove(eachPiece) and eachPiece.color == color:
+            if board.piece_can_move(eachPiece) and eachPiece.color == color:
                 pieceArray.append(eachPiece)
         return pieceArray
     
     @staticmethod
-    def getAllMoves(board, color):#Aaron
-        pieceArray = Agent.getAllPieces(board, color)
+    def get_all_moves(board, color):#Aaron
+        pieceArray = Agent.get_all_pieces(board, color)
         #Places all movable pieces into an array.
         moveArray = []
         for piece in pieceArray:
-            for move in board.getPossibleMoves(piece):
+            for move in board.get_all_possible_moves(piece):
                 moveArray.append(move)
-        return board.getAllPossibleMoves(color)
+        return board.get_all_possible_moves(color)
 
-    def selectMove(self, board):
+    def select_move(self, board):
         '''returns a move'''
         raise NotImplementedError()
 
-    def shouldDoubleJump(self, board, piece):
+    def should_double_jump(self, board, piece):
         return True
 
-    def selectDoubleJump(self, board, piece):
+    def select_double_jump(self, board, piece):
         '''returns a move after a double jump'''
         raise NotImplementedError()

@@ -63,7 +63,7 @@ class AgentBot(Bot):
         if pieceWasNotKing and pieceIsNowKing:
             return (piecePosition, moveList)
 
-        while move.isJump(self.board) and self.board.pieceCanJump(move.piece) and self.agent.shouldDoubleJump(self.board, move.piece):
+        while move.isJump(self.board) and self.board.piece_can_jump(move.piece) and self.agent.shouldDoubleJump(self.board, move.piece):
                 newMove = self.agent.selectDoubleJump(self.board, move.piece)
                 if newMove.isJump(self.board):
                     move = newMove

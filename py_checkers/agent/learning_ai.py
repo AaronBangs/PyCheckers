@@ -12,7 +12,7 @@ from py_checkers.agent import Agent
 
 
 class LearningAI(Agent):
-    def selectMove(self, board):
+    def select_move(self, board):
         self.board = board
         pass
 
@@ -28,7 +28,7 @@ class LearningAI(Agent):
             processed_data[(y*4 + (x//2 + 1))-1] = val
         return processed_data
 
-    def toCoords(self, pdn): #Changes from PDN to coords
+    def to_coords(self, pdn): #Changes from PDN to coords
         #IF PIECES ARE ON "EVEN" SQUARES (starting at 0,0), which is incorrect
         #order = [0,2,4,6,1,3,5,7]
         #IF PIECES ARE ON "ODD" SQUARES (starting at 1,0)
@@ -37,10 +37,10 @@ class LearningAI(Agent):
         y = ((pdn-1) // 4)
         return(x,y)
 
-    def toMove(self, pdn_loc_from, pdn_loc_to, board): #Returns a Move() object when given data in Portable Droughts Notation
+    def to_move(self, pdn_loc_from, pdn_loc_to, board): #Returns a Move() object when given data in Portable Droughts Notation
 
-        x1, y1 = self.toCoords(pdn_loc_from)
-        x2, y2 = self.toCoords(pdn_loc_to)
+        x1, y1 = self.to_coords(pdn_loc_from)
+        x2, y2 = self.to_coords(pdn_loc_to)
         
         return Move(board.getPieceAt(x1,y1), x2, y2)
 

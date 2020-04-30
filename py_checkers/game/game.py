@@ -48,11 +48,11 @@ class CheckerGame():
             if self.prints_on: print(self.board)
 
             if str(type(self.currentPlayer)) == "<class 'AaronAI.AaronAI'>":
-                move = self.currentPlayer.selectMove(self.board, 2)
+                move = self.currentPlayer.select_move(self.board, 2)
             else:
-                move = self.currentPlayer.selectMove(self.board)
+                move = self.currentPlayer.select_move(self.board)
 
-            self.applyMove(move)
+            self.apply_move(move)
             num_of_turns += 1
             if num_of_turns > MAX_TURNS:
                 break
@@ -62,11 +62,11 @@ class CheckerGame():
             
 
             #check for double jump
-            while move.isJump(self.board) and self.board.pieceCanJump(move.piece) and self.currentPlayer.shouldDoubleJump(self.board, move.piece):
+            while move.is_jump(self.board) and self.board.piece_can_jump(move.piece) and self.currentPlayer.shouldDoubleJump(self.board, move.piece):
                 newMove = self.currentPlayer.selectDoubleJump(self.board, move.piece)
-                if newMove.isJump(self.board):
+                if newMove.is_jump(self.board):
                     move = newMove
-                    self.applyMove(move)
+                    self.apply_move(move)
                 else:
                     print("That's not a jump.")
                     continue
@@ -78,25 +78,25 @@ class CheckerGame():
         else:
             print("White Wins!")
 
-    def playSilently(self):
+    def play_silently(self):
         while not self.isOver:
-            move = self.currentPlayer.selectMove(self.board)
-            self.applyMove(move)
+            move = self.currentPlayer.select_move(self.board)
+            self.apply_move(move)
             if self.isOver:
                 break
 
             #check for double jump
-            while move.isJump(self.board) and self.board.pieceCanJump(move.piece) and self.currentPlayer.shouldDoubleJump(self.board, move.piece):
+            while move.is_jump(self.board) and self.board.piece_can_jump(move.piece) and self.currentPlayer.shouldDoubleJump(self.board, move.piece):
                 newMove = self.currentPlayer.selectDoubleJump(self.board, move.piece)
-                if newMove.isJump(self.board):
+                if newMove.is_jump(self.board):
                     move = newMove
-                    self.applyMove(move)
+                    self.apply_move(move)
 
             self.currentPlayer = self.next_player
 
         return self.winner
 
-    def applyMove(self, move):
+    def apply_move(self, move):
         if move == None:
             if self.currentPlayer.color == Player.black:
                 self.winner = Player.black
@@ -109,7 +109,7 @@ class CheckerGame():
         move.play(self.board)
 
 
-    def getState(self):
+    def get_state(self):
         '''
         returns a deep copy of the game so you can record it's state while still
         being able to play on. This is probably inefficient.

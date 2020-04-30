@@ -27,11 +27,12 @@ class Piece():
     def __eq__(self, other):
         if other == None:
             return False
-        if self.x == other.x and self.y == other.y and self.color == other.color: #Does NOT check to see if the king status is the same; by Aaron
-            return True
-        return False
+        if type(other) == Piece: # Does NOT check to see if the king status is the same; by Aaron
+            if self.x == other.x and self.y == other.y and self.color == other.color: 
+                return True
+        return super().__eq__(other)
 
-    def makeKing(self): #by Aaron
+    def make_king(self): #by Aaron
         self.isKing = True
 
 class Move():
@@ -50,24 +51,24 @@ class Move():
         #FOR DEBUGGING PURPOSES
         #print(self)
     
-    def isValid(self, board): #Checks to see if the move is valid on a given board; by Aaron, modified by Ben
-        onBoard = board.withinBounds(self.to_x, self.to_y) #The move does not go off of the board
+    def is_valid(self, board): #Checks to see if the move is valid on a given board; by Aaron, modified by Ben
+        onBoard = board.within_bounds(self.to_x, self.to_y) #The move does not go off of the board
         spaceIsEmpty = not board.occupied(self.to_x, self.to_y) #There is not a piece occupying the space being moved to
         moveIsSingle = abs(self.delta_x) == 1 and abs(self.delta_y) == 1  #Move is not a jump
-        moveIsJump = abs(self.delta_x) == 2 and abs(self.delta_y) == 2  #If move is a jump
+        moveis_jump = abs(self.delta_x) == 2 and abs(self.delta_y) == 2  #If move is a jump
         enemyInMiddle = board.find(self.capture) #Make sure there is a piece of the opposite color in the next space
         isForward = self.piece.isKing \
             or (self.piece.color == Player.black and self.direction[1] == 1) \
             or (self.piece.color == Player.white and self.direction[1] == -1)
         
-        return onBoard and spaceIsEmpty and (moveIsSingle or (moveIsJump and enemyInMiddle)) and isForward
+        return onBoard and spaceIsEmpty and (moveIsSingle or (moveis_jump and enemyInMiddle)) and isForward
     
-    def isJump(self, board): #You should always make sure the move is valid BEFORE calling this to check if it is a jump; by Aaron
+    def is_jump(self, board): #You should always make sure the move is valid BEFORE calling this to check if it is a jump; by Aaron
         return (abs(self.delta_x) == 2 and abs(self.delta_y) == 2)
 
     def play(self, board): #Plays the move on the specified board, if it is valid; by Aaron
-        if self.isValid(board): #If the move is valid on the given board
-            if self.isJump(board):
+        if self.is_valid(board): #If the move is valid on the given board
+            if self.is_jump(board):
                 p = board.find(self.capture)
                 board.remove(p)
 
@@ -143,7 +144,7 @@ class Board():
         if s == '●' or s == '■':
             piece.color = Player.white
         if s == '□' or s == '■':
-            piece.makeKing()
+            piece.make_king()
         return piece
 
 
@@ -166,24 +167,24 @@ class Board():
             print("Could not remove piece: " + str(piece))
             pass
 
-    def getPieceAt(self, x, y): #by Ben
+    def get_piece_at(self, x, y): #by Ben
         for piece in self.grid:
             if piece.x == x and piece.y == y:
                 return piece
         print("Could not find piece at location (%i, %i)" % (x, y))
         return None
 
-    def movePieceTo(self, piece, x, y): #by Aaron
+    def move_piece_to(self, piece, x, y): #by Aaron
         move = Move(piece, x, y)
         move.play(self)
 
-    def withinBounds(self, x, y): #by Aaron
+    def within_bounds(self, x, y): #by Aaron
         if x < 0 or x > (self.WIDTH - 1) or y < 0 or y > (self.HEIGHT - 1):
             #print("(%i, %i) is outside Board." % (x, y))
             return False
         return True
     
-    def getPossibleMoves(self, piece): #by Gerard
+    def get_possible_moves(self, piece): #by Gerard
         moves = \
             [
             Move(piece, piece.x - 2, piece.y - 2),\
@@ -201,52 +202,52 @@ class Board():
         validMoves = []
         
         for move in moves:
-             if move.isValid(self):
+             if move.is_valid(self):
                  validMoves.append(move)
 
         return validMoves
     
-    def getAllPossibleMoves(self, color):
+    def get_all_possible_moves(self, color):
         pieces = list(filter(lambda p: p.color == color, self.grid))
         moves = []
 
         jumpIsPossible = False
         for p in pieces:
-            piece_moves = self.getPossibleMoves(p)
+            piece_moves = self.get_possible_moves(p)
             moves.extend(piece_moves)
             if not jumpIsPossible:
                 for m in piece_moves:
-                    if m.isJump(self):
+                    if m.is_jump(self):
                         jumpIsPossible = True
 
         if jumpIsPossible:
-            moves = list(filter(lambda m: m.isJump(self), moves))
+            moves = list(filter(lambda m: m.is_jump(self), moves))
         
         return moves
 
-    def pieceCanJump(self, piece):
-        upLeft      = Move(piece, piece.x - 2, piece.y - 2).isValid(self)
-        upRight     = Move(piece, piece.x + 2, piece.y - 2).isValid(self)
-        downLeft    = Move(piece, piece.x - 2, piece.y + 2).isValid(self)
-        downRight   = Move(piece, piece.x + 2, piece.y + 2).isValid(self)
+    def piece_can_jump(self, piece):
+        upLeft      = Move(piece, piece.x - 2, piece.y - 2).is_valid(self)
+        upRight     = Move(piece, piece.x + 2, piece.y - 2).is_valid(self)
+        downLeft    = Move(piece, piece.x - 2, piece.y + 2).is_valid(self)
+        downRight   = Move(piece, piece.x + 2, piece.y + 2).is_valid(self)
 
         if piece.isKing: return upLeft or upRight or downLeft or downRight
         elif piece.color == Player.white: return upLeft or upRight
         elif piece.color == Player.black: return downLeft or downRight
 
-    def pieceCanMove(self, piece):
+    def piece_can_move(self, piece):
         valid = False
         
-        upLeft      = Move(piece, piece.x - 1, piece.y - 1).isValid(self)
-        upRight     = Move(piece, piece.x + 1, piece.y - 1).isValid(self)
-        downLeft    = Move(piece, piece.x - 1, piece.y + 1).isValid(self)
-        downRight   = Move(piece, piece.x + 1, piece.y + 1).isValid(self)
+        upLeft      = Move(piece, piece.x - 1, piece.y - 1).is_valid(self)
+        upRight     = Move(piece, piece.x + 1, piece.y - 1).is_valid(self)
+        downLeft    = Move(piece, piece.x - 1, piece.y + 1).is_valid(self)
+        downRight   = Move(piece, piece.x + 1, piece.y + 1).is_valid(self)
 
         if piece.isKing: valid = upLeft or upRight or downLeft or downRight
         elif piece.color == Player.white: valid = upLeft or upRight
         elif piece.color == Player.black: valid = downLeft or downRight
         
-        return self.pieceCanJump(piece) or valid
+        return self.piece_can_jump(piece) or valid
 
     def __str__(self): #by Aaron
         out = ''

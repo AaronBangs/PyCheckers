@@ -8,7 +8,7 @@ import random
 
 class RandomAI(Agent):
     
-    def selectMove(self, board):
+    def select_move(self, board):
         while True:
             moveArray = board.getAllPossibleMoves(self.color)
             if moveArray == []:
@@ -17,10 +17,10 @@ class RandomAI(Agent):
             # print("\n\nSelected Move: " + str(selectedMove) + "\n\n")
             return selectedMove
     
-    def shouldDoubleJump(self, board, piece):
+    def should_double_jump(self, board, piece):
         return True
 
-    def selectDoubleJump(self, board, piece):
+    def select_double_jump(self, board, piece):
         while True:
             moveArray = board.getPossibleMoves(piece)
             jumpArray = []
