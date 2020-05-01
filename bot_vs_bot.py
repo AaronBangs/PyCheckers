@@ -1,4 +1,4 @@
-from py_checkers.bot import RandomBot
+from py_checkers.bot import RandomBot, MonteCarloBot
 import os
 import time
 
@@ -44,7 +44,7 @@ class Controller:
         input("Press a key to close")
 
 def main():
-    red_bot = RandomBot("red")
+    red_bot = MonteCarloBot("red")
     black_bot = RandomBot("black")
     controller = Controller(black_bot, red_bot)
     controller.run_game()

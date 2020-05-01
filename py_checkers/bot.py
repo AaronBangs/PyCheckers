@@ -140,7 +140,7 @@ class RandomBot(AgentBot):
         super().__init__(agent)
 
 
-SECONDS_CALCULATING = 30
+SECONDS_CALCULATING = 2
 TEMPERATURE = 1.5
 
 class MonteCarloBot(AgentBot):

@@ -141,7 +141,7 @@ class MonteCarloAI(Agent):
         game_state.board = copy.deepcopy(board)
 
         moves = board.get_possible_moves(piece)
-        moves = list(filter(lambda m: m.isJump(self), moves))
+        moves = list(filter(lambda m: m.is_jump(self), moves))
 
         if len(moves) == 1:
             return moves[0]
@@ -239,4 +239,4 @@ class MonteCarloAI(Agent):
             random_game.current_player = random_game.black_player
         else:
             random_game.current_player = random_game.red_player
-        return random_game.playSilently()
+        return random_game.play_silently()

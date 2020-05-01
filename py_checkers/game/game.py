@@ -43,7 +43,7 @@ class CheckerGame():
             if self.current_player.color == Player.black:
                 if self.prints_on: print("Black's turn!")
             elif self.current_player.color == Player.red:
-                if self.prints_on: print("red's turn!")
+                if self.prints_on: print("Red's turn!")
 
             if self.prints_on: print(self.board)
 
@@ -114,4 +114,4 @@ class CheckerGame():
         returns a deep copy of the game so you can record it's state while still
         being able to play on. This is probably inefficient.
         '''
-        return copy.deep_copy(self)
+        return copy.deepcopy(self)
